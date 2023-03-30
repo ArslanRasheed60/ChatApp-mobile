@@ -74,6 +74,8 @@
             android:layout_marginHorizontal="8dp"
             android:text="message"
             android:textColor="@color/white"
+            android:singleLine="true"
+            android:ellipsize="end"
             />
     </LinearLayout>
 

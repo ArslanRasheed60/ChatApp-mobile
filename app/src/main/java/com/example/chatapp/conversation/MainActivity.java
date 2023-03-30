@@ -112,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
             recyclerViewMessageLists.scrollToPosition(mAdaptor.getItemCount() - 1);
 
             //update conversation table in the database
-            String subString = newMessage2.getMessage().substring(0,30).trim() + "...";
-            myDB.updateConversationMessageTimestamp(receiverId, subString, timeStamp);
+            myDB.updateConversationMessageTimestamp(receiverId, newMessage2.getMessage(), timeStamp);
         }
         else{
             Toast toast = Toast.makeText(this,"Field is empty",Toast.LENGTH_SHORT);
