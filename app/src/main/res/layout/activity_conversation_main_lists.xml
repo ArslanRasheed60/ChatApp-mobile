@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/remove_database"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="22dp"
+        android:backgroundTint="@color/OrangeRed"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_cleaning_services_24"
+        android:tint="#FDFDFD"
+        app:borderWidth="0dp"
+        app:rippleColor="#FFFFFF" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="22dp"
+        android:backgroundTint="@color/LightGreen"
+        android:clickable="true"
+        android:contentDescription="@string/app_name"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_add_24"
+        android:tint="#FFFFFF"
+        app:borderWidth="0dp"
+        app:rippleColor="@color/white" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ConversationMessageLists"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Black1"
+        />
+</RelativeLayout>
