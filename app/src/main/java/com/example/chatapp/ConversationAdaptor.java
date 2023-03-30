@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,17 +19,20 @@ import org.w3c.dom.Text;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
-public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdaptor.MyViewHolder> {
+public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdaptor.MyViewHolder> implements Filterable {
 
     Context context;
     public ArrayList<Person>  personsList;
+    public ArrayList<Person> filteredPersonLists;
     private SelectItemListener listener;
 
     public ConversationAdaptor(Context context, ArrayList<Person> personsList, SelectItemListener listener){
         this.context = context;
         this.personsList = personsList;
+        this.filteredPersonLists = personsList;
         this.listener = listener;
     }
 
@@ -42,10 +47,10 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
 
     @Override
     public void onBindViewHolder(@NonNull ConversationAdaptor.MyViewHolder holder, int position) {
-        String name = personsList.get(position).getName();
-        String lastMessage = personsList.get(position).getLastMessage();
+        String name = filteredPersonLists.get(position).getName();
+        String lastMessage = filteredPersonLists.get(position).getLastMessage();
 
-        long timeStamp = personsList.get(position).getTimeStamp();
+        long timeStamp = filteredPersonLists.get(position).getTimeStamp();
         Date dateTime = new Date(timeStamp);
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatted = new SimpleDateFormat("HH:mm: a");
@@ -65,7 +70,12 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
 
     @Override
     public int getItemCount() {
-        return personsList.size();
+        return filteredPersonLists.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return conversationFilter;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
@@ -84,7 +94,7 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
-                    listener.onItemClick(personsList.get(pos), pos);
+                    listener.onItemClick(filteredPersonLists.get(pos), pos);
                 }
             });
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -92,7 +102,7 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
                 public boolean onLongClick(View view) {
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
-                        listener.onItemLongClick(personsList.get(pos), pos);
+                        listener.onItemLongClick(filteredPersonLists.get(pos), pos);
                         return true;
                     }
                     return false;
@@ -105,5 +115,33 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
         public void onItemClick(Person person, int pos);
         public void onItemLongClick(Person person, int pos);
     }
+
+    private Filter conversationFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            ArrayList<Person> filteredPersons = new ArrayList<>();
+
+            if(charSequence == null || charSequence.length() == 0){
+                filteredPersons = personsList;
+            }else{
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+                for(Person person:
+                filteredPersonLists){
+                    if(person.getName().contains(filterPattern)){
+                        filteredPersons.add(person);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredPersons;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            filteredPersonLists = (ArrayList<Person>) filterResults.values;
+            notifyDataSetChanged();
+        }
+    };
 
 }

@@ -4,9 +4,11 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,8 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
@@ -54,6 +58,9 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     //handle delete
     Boolean isOneMessageOnHold;
     int ConversationIdForDeletion;
+
+    //handle menu and search
+    SearchView searchView;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -93,15 +100,15 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 }
         );
 
-        remove_db_button = findViewById(R.id.remove_database);
-        remove_db_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isOneMessageOnHold = false;
-                dialog.show();
-//                myDB.removeDatabase();
-            }
-        });
+//        remove_db_button = findViewById(R.id.remove_database);
+//        remove_db_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                isOneMessageOnHold = false;
+//                dialog.show();
+////                myDB.removeDatabase();
+//            }
+//        });
 
         //alert box
         CreateAndHandleAlertBox();
@@ -214,6 +221,54 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         // Customize the dialog box background and corners
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background);
 
+    }
+
+
+    public boolean onCreateOptionsMenu(Menu menu){
+        //Inflating menu
+        getMenuInflater().inflate(R.menu.main_page_menu, menu);
+
+        //capturing reference of search button
+        MenuItem search_button = menu.findItem(R.id.search_button);
+
+        //adding search view in menu
+        SearchView searchView = (SearchView) search_button.getActionView();
+        searchView.setQueryHint("Search...");
+
+        //adding ontextchange listener in search view
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(myAdapt instanceof ConversationAdaptor){
+                    ConversationAdaptor mA = (ConversationAdaptor) myAdapt;
+                    mA.getFilter().filter(newText.toString());
+                }
+                return true;
+            }
+        });
+
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+
+        switch (item.getItemId()){
+            case R.id.clearChat:
+            {
+                isOneMessageOnHold = false;
+                dialog.show();
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }
