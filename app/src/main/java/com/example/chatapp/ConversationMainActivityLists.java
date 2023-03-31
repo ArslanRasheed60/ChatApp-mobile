@@ -37,6 +37,7 @@ import com.example.chatapp.newConversation.NewConversation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ConversationMainActivityLists extends AppCompatActivity implements ConversationAdaptor.SelectItemListener{
 
@@ -49,7 +50,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
     ConversationAdaptor myAdapt;
     ConversationAdaptor.SelectItemListener listener;
-    ActivityResultLauncher<Intent> conver_activity_launcher;
+    ActivityResultLauncher<Intent> conversation_activity_launcher;
 
     //alert box
     AlertDialog.Builder removeBuilder;
@@ -93,12 +94,36 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         recyclerView.setLayoutManager(new LinearLayoutManager(ConversationMainActivityLists.this));
         recyclerView.setAdapter(myAdapt);
 
-        conver_activity_launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+        conversation_activity_launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if(result.getResultCode() == RESULT_OK){
+                            Intent data = result.getData();
+                            String personId = data.getStringExtra("id");
+                            String personLastMessage = data.getStringExtra("lastMessage");
+                            long personTimeStamp = data.getLongExtra("timeStamp", -1);
+                            int recyclerViewItemId = data.getIntExtra("recyclerViewItemId", -1);
+
+                            if(personTimeStamp != -1 && !Objects.equals(personLastMessage, "" ) && recyclerViewItemId != -1){
+                                Toast.makeText(ConversationMainActivityLists.this, "agya wapis krne lga hn update", Toast.LENGTH_SHORT).show();
+
+                                for (Person person :
+                                        personsList) {
+                                    if(person.getId() == Integer.parseInt(personId)){
+                                        person.setLastMessage(personLastMessage);
+                                        person.setTimeStamp(personTimeStamp);
+//                                    myAdapt.notifyDataSetChanged();
+                                        break;
+                                    }
+                                }
+                                myDB.updateConversationMessageTimestamp(personId, personLastMessage, personTimeStamp);
+
+                                Person updatedItem = personsList.remove(recyclerViewItemId);
+
+                                personsList.add(0, updatedItem);
+                            }
                             myAdapt.notifyDataSetChanged();
                         }
                     }
@@ -136,7 +161,8 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1){
+        if (requestCode == 1) {
+            // get the data sent back from the main activity
             recreate();
         }
     }
@@ -146,7 +172,8 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("id", Integer.toString(person.getId()));
         intent.putExtra("name", person.getName());
-        this.startActivity(intent);
+        intent.putExtra("recyclerViewItemId", pos);
+        conversation_activity_launcher.launch(intent);
     }
 
     @Override

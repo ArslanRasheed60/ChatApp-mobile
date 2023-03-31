@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.chatapp.ConversationMainActivityLists;
 import com.example.chatapp.MyDataBaseHelper;
 import com.example.chatapp.R;
 import com.example.chatapp.RandomText;
@@ -36,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
     //
     private String receiverId , receiverName;
+    int recyclerViewItemId;
     MyDataBaseHelper myDB;
+    long timeStamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         receiverId = intent.getStringExtra("id");
         receiverName = intent.getStringExtra("name");
+        recyclerViewItemId = intent.getIntExtra("recyclerViewItemId", -1);
         storeMessageDataInArrays();
+        timeStamp = -1;
     }
 
 
@@ -84,8 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(v.getId() == R.id.sender1TextBtn && !convert_editText.equals("")){
 
-
-            long timeStamp = System.currentTimeMillis();
+            timeStamp = System.currentTimeMillis();
             Date dateTime = new Date(timeStamp);
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat formatted = new SimpleDateFormat("HH:mm: a");
@@ -116,12 +120,28 @@ public class MainActivity extends AppCompatActivity {
             recyclerViewMessageLists.scrollToPosition(mAdaptor.getItemCount() - 1);
 
             //update conversation table in the database
-            myDB.updateConversationMessageTimestamp(receiverId, newMessage2.getMessage(), timeStamp);
+//            myDB.updateConversationMessageTimestamp(receiverId, newMessage2.getMessage(), timeStamp);
+
         }
         else{
             Toast toast = Toast.makeText(this,"Field is empty",Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("id", receiverId); // put the data you want to send back in the intent
+        String lastMessage = SRMessages.size() == 0 ? "" : SRMessages.get(SRMessages.size() - 1).getMessage();
+        intent.putExtra("lastMessage", lastMessage);
+        intent.putExtra("timeStamp", timeStamp);
+        intent.putExtra("recyclerViewItemId", recyclerViewItemId);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+        Toast.makeText(MainActivity.this, "Back press hoa hai", Toast.LENGTH_SHORT).show();
+
+//        finish();
     }
 
     @SuppressLint("NotifyDataSetChanged")
