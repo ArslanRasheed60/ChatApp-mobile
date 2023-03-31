@@ -56,7 +56,9 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     AlertDialog.Builder removeBuilder;
     EditText input;
     AlertDialog removeDialog;
+    int recyclerViewItemIdForDeletion;
 
+    //alert box
     AlertDialog.Builder addBuilder;
     AlertDialog addDialog;
 
@@ -107,8 +109,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                             int recyclerViewItemId = data.getIntExtra("recyclerViewItemId", -1);
 
                             if(personTimeStamp != -1 && !Objects.equals(personLastMessage, "" ) && recyclerViewItemId != -1){
-                                Toast.makeText(ConversationMainActivityLists.this, "agya wapis krne lga hn update", Toast.LENGTH_SHORT).show();
-
                                 for (Person person :
                                         personsList) {
                                     if(person.getId() == Integer.parseInt(personId)){
@@ -144,6 +144,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         CreateAndHandleAlertBox();
         UserAddingPop();
         ConversationIdForDeletion = -1;
+        recyclerViewItemIdForDeletion = -1;
     }
 
     public void storeDataInArrays(){
@@ -180,6 +181,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     public void onItemLongClick(Person person, int pos) {
         isOneMessageOnHold = true;
         ConversationIdForDeletion = person.getId();
+        recyclerViewItemIdForDeletion = pos;
         removeDialog.show();
     }
 
@@ -216,14 +218,23 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
             @Override
             public void onClick(View v) {
                 // Delete the conversation
+                ArrayList<Person> UpdatedList = new ArrayList<>();
                 if(isOneMessageOnHold){
-                    myDB.DeleteOneConversation(Integer.toString(ConversationIdForDeletion));
+                    if(recyclerViewItemIdForDeletion != -1){
+                        personsList.remove(recyclerViewItemIdForDeletion);
+                        myDB.DeleteOneConversation(Integer.toString(ConversationIdForDeletion));
+                        removeDialog.dismiss();
+                    }
                 }else{
                     myDB.DeleteAllConversation();
+                    personsList.removeAll(personsList);
+                    removeDialog.dismiss();
                 }
-                Intent intent = new Intent(ConversationMainActivityLists.this, ConversationMainActivityLists.class);
-                startActivity(intent);
-                finish();
+
+//                Intent intent = new Intent(ConversationMainActivityLists.this, ConversationMainActivityLists.class);
+//                startActivity(intent);
+//                finish();
+                myAdapt.notifyDataSetChanged();
             }
         });
 

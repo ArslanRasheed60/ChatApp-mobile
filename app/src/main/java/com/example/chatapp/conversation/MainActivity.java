@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("recyclerViewItemId", recyclerViewItemId);
         setResult(RESULT_OK, intent);
         super.onBackPressed();
-        Toast.makeText(MainActivity.this, "Back press hoa hai", Toast.LENGTH_SHORT).show();
 
 //        finish();
     }

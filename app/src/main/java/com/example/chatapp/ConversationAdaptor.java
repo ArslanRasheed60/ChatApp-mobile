@@ -36,6 +36,8 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
         this.listener = listener;
     }
 
+
+
     @NonNull
     @Override
     public ConversationAdaptor.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
