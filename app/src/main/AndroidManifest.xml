@@ -36,7 +36,7 @@
         </activity>
         <activity
             android:name=".conversation.MainActivity"
-            android:parentActivityName=".ConversationMainActivityLists"
+
             android:exported="false">
 
             <!-- <intent-filter> -->

@@ -2,6 +2,7 @@ package com.example.chatapp.conversation;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SRMessages = new ArrayList<>();
+        MessageViewModel vm = new ViewModelProvider(this).get(MessageViewModel.class);
+        SRMessages = vm.getMessages(savedInstanceState, "data");
+
+//        SRMessages = new ArrayList<>();
         recyclerViewMessageLists = (RecyclerView) findViewById(R.id.messageLists);
         recyclerViewMessageLists.setHasFixedSize(true);
 
