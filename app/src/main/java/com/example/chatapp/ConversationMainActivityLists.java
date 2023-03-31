@@ -52,9 +52,13 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     ActivityResultLauncher<Intent> conver_activity_launcher;
 
     //alert box
-    AlertDialog.Builder builder;
+    AlertDialog.Builder removeBuilder;
     EditText input;
-    AlertDialog dialog;
+    AlertDialog removeDialog;
+
+    AlertDialog.Builder addBuilder;
+    AlertDialog addDialog;
+
     //handle delete
     Boolean isOneMessageOnHold;
     int ConversationIdForDeletion;
@@ -73,8 +77,9 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         add_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ConversationMainActivityLists.this, NewConversation.class);
-                startActivity(intent);
+//                Intent intent = new Intent(ConversationMainActivityLists.this, NewConversation.class);
+//                startActivity(intent);
+                addDialog.show();
             }
         });
 
@@ -112,6 +117,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
         //alert box
         CreateAndHandleAlertBox();
+        UserAddingPop();
         ConversationIdForDeletion = -1;
     }
 
@@ -147,14 +153,14 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     public void onItemLongClick(Person person, int pos) {
         isOneMessageOnHold = true;
         ConversationIdForDeletion = person.getId();
-        dialog.show();
+        removeDialog.show();
     }
 
     //alert box creating and handle
     public void CreateAndHandleAlertBox(){
 
         // Create a new AlertDialog builder
-        builder = new AlertDialog.Builder(this);
+        removeBuilder = new AlertDialog.Builder(this);
         // Set the dialog title and message
 //        builder.setTitle("Delete this Conversation");
 
@@ -203,7 +209,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
             @Override
             public void onClick(View v) {
                 // Dismiss the dialog box
-                dialog.dismiss();
+                removeDialog.dismiss();
             }
         });
 
@@ -213,18 +219,95 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         layout.addView(cancelButton);
 
         // Set the layout as the dialog view
-        builder.setView(layout);
+        removeBuilder.setView(layout);
 
         // Create and show the AlertDialog
-        dialog = builder.create();
+        removeDialog = removeBuilder.create();
 
         // Customize the dialog box background and corners
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background);
+        removeDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background);
 
     }
 
     //Pop us for adding the user
 
+    public void UserAddingPop(){
+
+        // Create a new AlertDialog builder
+        addBuilder = new AlertDialog.Builder(this);
+        // Set the dialog title and message
+
+        // Create a LinearLayout to hold the buttons
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setGravity(Gravity.CENTER);
+
+        int backgroundColor = 7895160;
+
+        TextView textView = new TextView(this);
+        textView.setText("Add New User");
+        textView.setBackgroundColor(backgroundColor);
+        textView.setTextColor(Color.WHITE);
+        textView.setGravity(Gravity.CENTER);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+//        textView.setPadding(5,15,5,15);
+        textView.setHeight(250);
+
+        EditText editText = new EditText(this);
+        textView.setBackgroundColor(backgroundColor);
+        editText.setTextColor(Color.WHITE);
+        editText.setGravity(Gravity.CENTER);
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+
+        // Create the "Delete" button
+        Button AddButton = new Button(this);
+        AddButton.setText("Add Person");
+        AddButton.setBackgroundColor(backgroundColor);
+        AddButton.setTextColor(Color.RED);
+        AddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(editText.getText().toString().trim().equals("")){
+                    Toast.makeText(ConversationMainActivityLists.this, "Field is empty", Toast.LENGTH_SHORT).show();
+                }else{
+                    myDB.addNewConversation(editText.getText().toString().trim());
+                    editText.setText("");
+                }
+                Intent intent = new Intent(ConversationMainActivityLists.this, ConversationMainActivityLists.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // Create the "Cancel" button
+        Button cancelButton = new Button(this);
+        cancelButton.setText("Cancel");
+        cancelButton.setBackgroundColor(backgroundColor);
+        cancelButton.setTextColor(Color.RED);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Dismiss the dialog box
+                addDialog.dismiss();
+            }
+        });
+
+        // Add the buttons to the layout
+        layout.addView(textView);
+        layout.addView(editText);
+        layout.addView(AddButton);
+        layout.addView(cancelButton);
+
+        // Set the layout as the dialog view
+        addBuilder.setView(layout);
+
+        // Create and show the AlertDialog
+        addDialog = addBuilder.create();
+
+        // Customize the dialog box background and corners
+        addDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background);
+
+    }
 
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -266,7 +349,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
             case R.id.clearChat:
             {
                 isOneMessageOnHold = false;
-                dialog.show();
+                removeDialog.show();
                 return true;
             }
         }
