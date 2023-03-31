@@ -69,8 +69,6 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         long result =  db.insert(CONVERSATION_TABLE, null, cv);
         if(result == -1){
             Toast.makeText(context, "Failed", LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(context, "Added Successfully!", LENGTH_SHORT).show();
         }
     }
 
@@ -95,8 +93,6 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         long result =  db.insert(MESSAGE_TABLE, null, content);
         if(result == -1){
             Toast.makeText(context, "Failed", LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(context, "Added Successfully!", LENGTH_SHORT).show();
         }
     }
 
@@ -126,15 +122,7 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         long result = db.update(CONVERSATION_TABLE, content, "id=?", new String[]{id});
         if (result == -1){
             Toast.makeText(context, "Failed to update!", LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(context, "Update Successfully", LENGTH_SHORT).show();
         }
-
-    }
-
-    public void removeDatabase(){
-        Toast.makeText(context, "Ja kam kr ja k", LENGTH_SHORT).show();
-//        context.deleteDatabase(DATABASE_NAME);
     }
 
     public void DeleteOneConversation(String row_id){
@@ -142,15 +130,11 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
         long result = db.delete(CONVERSATION_TABLE,"id=?",new String[]{row_id});
         if(result == -1){
             Toast.makeText(context, "Failed to Delete!", LENGTH_SHORT).show();
-        }{
-            Toast.makeText(context, "Deleted Successfully!", LENGTH_SHORT).show();
         }
     }
 
     public void DeleteAllConversation(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + CONVERSATION_TABLE);
-        Toast.makeText(context, "Deleted Successfully!", LENGTH_SHORT).show();
     }
-
 }

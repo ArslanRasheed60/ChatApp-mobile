@@ -14,12 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdaptor.MyViewHolder> implements Filterable {
@@ -36,15 +33,12 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
         this.listener = listener;
     }
 
-
-
     @NonNull
     @Override
     public ConversationAdaptor.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view =  layoutInflater.inflate(R.layout.conversation_field, parent, false);
         return new MyViewHolder(view);
-
     }
 
     @Override
@@ -66,8 +60,6 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
             holder.textViewMessage.setText(lastMessage);
             holder.textViewTime.setText(formattedTime);
         }
-
-
     }
 
     @Override
@@ -139,6 +131,7 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
             return results;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             filteredPersonLists = (ArrayList<Person>) filterResults.values;

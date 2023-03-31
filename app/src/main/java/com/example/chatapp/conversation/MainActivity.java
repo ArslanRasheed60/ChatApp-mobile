@@ -16,14 +16,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.chatapp.ConversationMainActivityLists;
 import com.example.chatapp.MyDataBaseHelper;
 import com.example.chatapp.R;
 import com.example.chatapp.RandomText;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -55,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         //linear layout
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerViewMessageLists.setLayoutManager(linearLayoutManager);
 
@@ -66,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         mAdaptor = new MessageAdaptor(SRMessages);
         recyclerViewMessageLists.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerViewMessageLists.setAdapter(mAdaptor);
-
 
         //Database helper
         myDB = new MyDataBaseHelper(MainActivity.this);
@@ -95,10 +90,6 @@ public class MainActivity extends AppCompatActivity {
             SimpleDateFormat formatted = new SimpleDateFormat("HH:mm: a");
             String formattedTime = formatted.format(dateTime);
 
-
-//            LocalTime time = LocalTime.now();
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-//            String formattedTime = time.format(formatter);
             Message newMessage = new Message(MESSAGE_SENDER, convert_editText, formattedTime,0 );
             SRMessages.add(newMessage);
 
@@ -107,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
             editText.setText("");
 
             //database update for sender
-//            MyDataBaseHelper myDB = new MyDataBaseHelper(MainActivity.this);
             myDB.addNewMessage(Integer.parseInt(receiverId),newMessage.getMessage(), newMessage.getTime(), newMessage.getType());
 
             Message newMessage2 = new Message(receiverName, RandomText.generateRandomText(80), formattedTime,1 );
@@ -118,10 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
             //add message to last index of recycler view
             recyclerViewMessageLists.scrollToPosition(mAdaptor.getItemCount() - 1);
-
-            //update conversation table in the database
-//            myDB.updateConversationMessageTimestamp(receiverId, newMessage2.getMessage(), timeStamp);
-
         }
         else{
             Toast toast = Toast.makeText(this,"Field is empty",Toast.LENGTH_SHORT);
@@ -139,23 +125,17 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("recyclerViewItemId", recyclerViewItemId);
         setResult(RESULT_OK, intent);
         super.onBackPressed();
-
-//        finish();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void storeMessageDataInArrays(){
         Cursor cursor = myDB.ReadMessagesData(receiverId);
-        if(cursor.getCount() == 0){
-            Toast.makeText(this, "There are no current messages exists!", Toast.LENGTH_SHORT).show();
-        }else{
+        if(cursor.getCount() != 0){
             while (cursor.moveToNext()){
                 int senderType = Integer.parseInt(cursor.getString(3));
                 String username = senderType == 0 ? MESSAGE_SENDER : cursor.getString(0);
                 Message message = new Message(username,cursor.getString(1),cursor.getString(2),senderType);
                 SRMessages.add(message);
-//              personIdLists.add(cursor.getString(0));
-//              personNamesLists.add(cursor.getString(1));
             }
         }
         mAdaptor.notifyDataSetChanged();

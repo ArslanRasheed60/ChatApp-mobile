@@ -5,27 +5,22 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -33,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatapp.conversation.MainActivity;
-import com.example.chatapp.newConversation.NewConversation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -80,8 +74,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         add_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(ConversationMainActivityLists.this, NewConversation.class);
-//                startActivity(intent);
                 addDialog.show();
             }
         });
@@ -90,12 +82,14 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         myDB = new MyDataBaseHelper(ConversationMainActivityLists.this);
         personsList = new ArrayList<>();
 
-            storeDataInArrays();
+        //store data from database in arrays
+        storeDataInArrays();
 
         myAdapt = new ConversationAdaptor(ConversationMainActivityLists.this, personsList, this );
         recyclerView.setLayoutManager(new LinearLayoutManager(ConversationMainActivityLists.this));
         recyclerView.setAdapter(myAdapt);
 
+        //get results from the messages activity
         conversation_activity_launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @SuppressLint("NotifyDataSetChanged")
@@ -114,14 +108,13 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                                     if(person.getId() == Integer.parseInt(personId)){
                                         person.setLastMessage(personLastMessage);
                                         person.setTimeStamp(personTimeStamp);
-//                                    myAdapt.notifyDataSetChanged();
                                         break;
                                     }
                                 }
                                 myDB.updateConversationMessageTimestamp(personId, personLastMessage, personTimeStamp);
 
+                                //move person to the top of the list
                                 Person updatedItem = personsList.remove(recyclerViewItemId);
-
                                 personsList.add(0, updatedItem);
                             }
                             myAdapt.notifyDataSetChanged();
@@ -130,17 +123,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 }
         );
 
-//        remove_db_button = findViewById(R.id.remove_database);
-//        remove_db_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                isOneMessageOnHold = false;
-//                dialog.show();
-////                myDB.removeDatabase();
-//            }
-//        });
-
-        //alert box
+        //pop ups
         CreateAndHandleAlertBox();
         UserAddingPop();
         ConversationIdForDeletion = -1;
@@ -156,15 +139,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 Person person = new Person(cursor.getInt(0),cursor.getString(1), cursor.getString(2), cursor.getLong(3));
                 personsList.add(person);
             }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            // get the data sent back from the main activity
-            recreate();
         }
     }
 
@@ -190,8 +164,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
         // Create a new AlertDialog builder
         removeBuilder = new AlertDialog.Builder(this);
-        // Set the dialog title and message
-//        builder.setTitle("Delete this Conversation");
 
         // Create a LinearLayout to hold the buttons
         LinearLayout layout = new LinearLayout(this);
@@ -205,7 +177,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         textView.setTextColor(Color.WHITE);
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-//        textView.setPadding(5,15,5,15);
         textView.setHeight(250);
 
 
@@ -230,10 +201,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                     personsList.removeAll(personsList);
                     removeDialog.dismiss();
                 }
-
-//                Intent intent = new Intent(ConversationMainActivityLists.this, ConversationMainActivityLists.class);
-//                startActivity(intent);
-//                finish();
                 myAdapt.notifyDataSetChanged();
             }
         });
@@ -264,16 +231,13 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
         // Customize the dialog box background and corners
         removeDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background);
-
     }
 
     //Pop us for adding the user
-
     public void UserAddingPop(){
 
         // Create a new AlertDialog builder
         addBuilder = new AlertDialog.Builder(this);
-        // Set the dialog title and message
 
         // Create a LinearLayout to hold the buttons
         LinearLayout layout = new LinearLayout(this);
@@ -359,7 +323,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         SearchView searchView = (SearchView) search_button.getActionView();
         searchView.setQueryHint("Search...");
 
-        //adding ontextchange listener in search view
+        //adding on text change listener in search view
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -383,16 +347,11 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
 
-        switch (item.getItemId()){
-            case R.id.clearChat:
-            {
-                isOneMessageOnHold = false;
-                removeDialog.show();
-                return true;
-            }
+        if (item.getItemId() == R.id.clearChat) {
+            isOneMessageOnHold = false;
+            removeDialog.show();
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
 }
