@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/Black2"
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messageLists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+
+
+    <LinearLayout
+        android:id="@+id/enterTxt_Cnt"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:padding="2sp"
+        android:background="#225c6e"
+        >
+        <EditText
+            android:id="@+id/sender1Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingHorizontal="120dp"
+            android:hint="Enter Text in landscape"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/sender1TextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="handleOnClick"
+            android:text="Send" />
+    </LinearLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
