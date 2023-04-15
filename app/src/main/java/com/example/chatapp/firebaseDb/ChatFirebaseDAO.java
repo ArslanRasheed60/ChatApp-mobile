@@ -18,8 +18,11 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 public class ChatFirebaseDAO implements IChatInterface {
 
@@ -81,7 +84,16 @@ public class ChatFirebaseDAO implements IChatInterface {
 
     @Override
     public void savePerson(Person person) {
+        myRef = database.getReference().child("ChatDb").child("Conversation");
+        //making string id
+        String personId = "id" + Integer.toString(person.getId());
+        //making hashmap
+        Map<String, Object> childObject = new HashMap<>();
+        childObject.put(C_COLUMN_NAME, person.getName());
+        childObject.put(C_COLUMN_LAST_MESSAGE, person.getLastMessage());
+        childObject.put(C_COLUMN_TIMESTAMP, person.getTimeStamp());
 
+        myRef.child(personId).setValue(childObject);
     }
 
     @Override
@@ -89,7 +101,7 @@ public class ChatFirebaseDAO implements IChatInterface {
         if(personArrayList == null){
             personArrayList = new ArrayList<>();
         }
-        Log.d("yyyy", "size hai: "+ Integer.toString(personArrayList.size()));
+        personArrayList.sort(Comparator.comparingLong(Person::getTimeStamp).reversed());
         return personArrayList;
     }
 

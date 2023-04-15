@@ -9,30 +9,30 @@ import java.util.Hashtable;
 
 public class Person {
     private int id;
-    private String name;
-    private String lastMessage;
-    private long timeStamp;
+    private String person_name;
+    private String last_message;
+    private long timestamp;
     private transient IChatInterface dao = null;
 
     Person(String name, IChatInterface dao){
-        this.name = name;
+        this.person_name = name;
         this.id = -1;
-        this.timeStamp = -1;
-        this.lastMessage = "";
+        this.timestamp = -1;
+        this.last_message = "";
         this.dao = dao;
     }
 
     public Person(int id, String name, String lastMessage, long timeStamp){
         this.id = id;
-        this.name = name;
-        this.lastMessage = lastMessage;
-        this.timeStamp = timeStamp;
+        this.person_name = name;
+        this.last_message = lastMessage;
+        this.timestamp = timeStamp;
     }
     Person(int id, String name, String lastMessage, long timeStamp, IChatInterface dao){
         this.id = id;
-        this.name = name;
-        this.lastMessage = lastMessage;
-        this.timeStamp = timeStamp;
+        this.person_name = name;
+        this.last_message = lastMessage;
+        this.timestamp = timeStamp;
         this.dao = dao;
     }
 
@@ -45,32 +45,32 @@ public class Person {
     }
 
     public String getName() {
-        return name;
+        return person_name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.person_name = name;
     }
 
     public String getLastMessage() {
-        return lastMessage;
+        return last_message;
     }
 
     public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
+        this.last_message = lastMessage;
     }
 
     public long getTimeStamp() {
-        return timeStamp;
+        return timestamp;
     }
 
     public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+        this.timestamp = timeStamp;
     }
 
     public void save(){
         if (dao != null){
-            Person p = new Person(id, name, lastMessage, timeStamp);
+            Person p = new Person(id, person_name, last_message, timestamp);
             //save in database
             dao.savePerson(p);
         }
@@ -79,9 +79,9 @@ public class Person {
     public void load(Person person){
         if(person != null){
              id = person.getId();
-             name = person.getName();
-             lastMessage = person.getLastMessage();
-             timeStamp = person.getTimeStamp();
+            person_name = person.getName();
+            last_message = person.getLastMessage();
+            timestamp = person.getTimeStamp();
         }
     }
 
@@ -109,8 +109,8 @@ public class Person {
     }
 
     public void update(String lastMessage, long timeStamp){
-        this.lastMessage = lastMessage;
-        this.timeStamp = timeStamp;
+        this.last_message = lastMessage;
+        this.timestamp = timeStamp;
         if(dao != null){
             dao.updatePersonConversation(Integer.toString(this.getId()), this.getLastMessage(), this.getTimeStamp());
         }

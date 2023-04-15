@@ -80,7 +80,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         dao = new ChatFirebaseDAO(new ChatFirebaseDAO.DataObserver() {
             @Override
             public void update() {
-                Toast.makeText(ConversationMainActivityLists.this, "data update hoa", Toast.LENGTH_SHORT).show();
                 refresh();
             }
         });
@@ -88,7 +87,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         Globals.dao = dao;
         //load data
         personsList = Person.load(dao);
-        Toast.makeText(ConversationMainActivityLists.this, "data: " + Integer.toString(personsList.size()), Toast.LENGTH_SHORT).show();
 //        personsList = new ArrayList<>();
 
         recyclerView = findViewById(R.id.ConversationMessageLists);
@@ -280,9 +278,23 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 if(editText.getText().toString().trim().equals("")){
                     Toast.makeText(ConversationMainActivityLists.this, "Field is empty", Toast.LENGTH_SHORT).show();
                 }else{
-                    Person newPerson = new Person(editText.getText().toString().trim(), dao);
+                    Person newPerson;
+                    if(dao instanceof ChatFirebaseDAO){
+                        //getting id
+                        int max = 0;
+                        for(Person p: personsList){
+                            if (max < p.getId()){
+                                max = p.getId();
+                            }
+                        }
+                        long timeStamp = System.currentTimeMillis();
+                        newPerson = new Person(max + 1,editText.getText().toString().trim(), "" ,timeStamp,dao);
+                    }else{
+                        newPerson = new Person(editText.getText().toString().trim(), dao);
+                    }
                     newPerson.save();
                     editText.setText("");
+
                 }
                 Intent intent = new Intent(ConversationMainActivityLists.this, ConversationMainActivityLists.class);
                 startActivity(intent);
