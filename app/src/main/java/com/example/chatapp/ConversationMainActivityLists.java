@@ -28,6 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatapp.conversation.MainActivity;
+import com.example.chatapp.sqliteDB.ChatDbDAO;
+import com.example.chatapp.sqliteDB.MyDataBaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     FloatingActionButton add_Button;
     FloatingActionButton remove_db_button;
 
-    MyDataBaseHelper myDB;
+    IChatInterface dao;
     public ArrayList<Person>  personsList;
 
     ConversationAdaptor myAdapt;
@@ -58,7 +60,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
     //handle delete
     Boolean isOneMessageOnHold;
-    int ConversationIdForDeletion;
 
     //handle menu and search
     SearchView searchView;
@@ -69,6 +70,13 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_main_lists);
 
+        //connect databases
+        dao = new ChatDbDAO(this);
+        Globals.dao = dao;
+        //load data
+        personsList = Person.load(dao);
+//        personsList = new ArrayList<>();
+
         recyclerView = findViewById(R.id.ConversationMessageLists);
         add_Button = findViewById(R.id.floating_add_button);
         add_Button.setOnClickListener(new View.OnClickListener() {
@@ -77,13 +85,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 addDialog.show();
             }
         });
-
-
-        myDB = new MyDataBaseHelper(ConversationMainActivityLists.this);
-        personsList = new ArrayList<>();
-
-        //store data from database in arrays
-        storeDataInArrays();
 
         myAdapt = new ConversationAdaptor(ConversationMainActivityLists.this, personsList, this );
         recyclerView.setLayoutManager(new LinearLayoutManager(ConversationMainActivityLists.this));
@@ -106,13 +107,10 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                                 for (Person person :
                                         personsList) {
                                     if(person.getId() == Integer.parseInt(personId)){
-                                        person.setLastMessage(personLastMessage);
-                                        person.setTimeStamp(personTimeStamp);
+                                        person.update(personLastMessage, personTimeStamp);
                                         break;
                                     }
                                 }
-                                myDB.updateConversationMessageTimestamp(personId, personLastMessage, personTimeStamp);
-
                                 //move person to the top of the list
                                 Person updatedItem = personsList.remove(recyclerViewItemId);
                                 personsList.add(0, updatedItem);
@@ -126,21 +124,10 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         //pop ups
         CreateAndHandleAlertBox();
         UserAddingPop();
-        ConversationIdForDeletion = -1;
         recyclerViewItemIdForDeletion = -1;
     }
 
-    public void storeDataInArrays(){
-        Cursor cursor = myDB.ReadAllData();
-        if(cursor.getCount() == 0){
-            Toast.makeText(this, "Database is empty", Toast.LENGTH_SHORT).show();
-        }else{
-            while (cursor.moveToNext()){
-                Person person = new Person(cursor.getInt(0),cursor.getString(1), cursor.getString(2), cursor.getLong(3));
-                personsList.add(person);
-            }
-        }
-    }
+
 
     @Override
     public void onItemClick(Person person, int pos) {
@@ -154,7 +141,6 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     @Override
     public void onItemLongClick(Person person, int pos) {
         isOneMessageOnHold = true;
-        ConversationIdForDeletion = person.getId();
         recyclerViewItemIdForDeletion = pos;
         removeDialog.show();
     }
@@ -192,12 +178,13 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 ArrayList<Person> UpdatedList = new ArrayList<>();
                 if(isOneMessageOnHold){
                     if(recyclerViewItemIdForDeletion != -1){
+                        Person dPerson = personsList.get(recyclerViewItemIdForDeletion);
                         personsList.remove(recyclerViewItemIdForDeletion);
-                        myDB.DeleteOneConversation(Integer.toString(ConversationIdForDeletion));
+                        dPerson.delete();
                         removeDialog.dismiss();
                     }
                 }else{
-                    myDB.DeleteAllConversation();
+                    Person.deleteAll(dao);
                     personsList.removeAll(personsList);
                     removeDialog.dismiss();
                 }
@@ -272,7 +259,8 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 if(editText.getText().toString().trim().equals("")){
                     Toast.makeText(ConversationMainActivityLists.this, "Field is empty", Toast.LENGTH_SHORT).show();
                 }else{
-                    myDB.addNewConversation(editText.getText().toString().trim());
+                    Person newPerson = new Person(editText.getText().toString().trim(), dao);
+                    newPerson.save();
                     editText.setText("");
                 }
                 Intent intent = new Intent(ConversationMainActivityLists.this, ConversationMainActivityLists.class);
