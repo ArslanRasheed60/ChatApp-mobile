@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatapp.conversation.MainActivity;
+import com.example.chatapp.firebaseDb.ChatFirebaseDAO;
 import com.example.chatapp.sqliteDB.ChatDbDAO;
 import com.example.chatapp.sqliteDB.MyDataBaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,10 +73,22 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         setContentView(R.layout.activity_conversation_main_lists);
 
         //connect databases
-        dao = new ChatDbDAO(this);
+        //sqlite
+        //dao = new ChatDbDAO(this);
+
+        //firebase
+        dao = new ChatFirebaseDAO(new ChatFirebaseDAO.DataObserver() {
+            @Override
+            public void update() {
+                Toast.makeText(ConversationMainActivityLists.this, "data update hoa", Toast.LENGTH_SHORT).show();
+                refresh();
+            }
+        });
+
         Globals.dao = dao;
         //load data
         personsList = Person.load(dao);
+        Toast.makeText(ConversationMainActivityLists.this, "data: " + Integer.toString(personsList.size()), Toast.LENGTH_SHORT).show();
 //        personsList = new ArrayList<>();
 
         recyclerView = findViewById(R.id.ConversationMessageLists);
@@ -127,6 +141,13 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         recyclerViewItemIdForDeletion = -1;
     }
 
+    public void refresh(){
+//        NotesViewModel vm = new ViewModelProvider(getActivity()).get(NotesViewModel.class);
+        personsList = Person.load(dao);
+        if (personsList != null){
+            myAdapt.updateData(personsList);
+        }
+    }
 
 
     @Override

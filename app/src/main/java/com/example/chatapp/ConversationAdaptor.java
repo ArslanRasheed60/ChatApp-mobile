@@ -72,6 +72,12 @@ public class ConversationAdaptor extends RecyclerView.Adapter<ConversationAdapto
         return conversationFilter;
     }
 
+    public void updateData(ArrayList<Person> ds){
+        personsList = ds;
+        filteredPersonLists = personsList;
+        notifyDataSetChanged();
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewName;
