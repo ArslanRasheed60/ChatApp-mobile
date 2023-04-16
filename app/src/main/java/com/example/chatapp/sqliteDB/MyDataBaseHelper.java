@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 public class MyDataBaseHelper extends SQLiteOpenHelper {
 
     private Context context;
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "Chats.db";
 
 
@@ -27,17 +27,18 @@ public class MyDataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sqlQuery1 = "CREATE TABLE " + CONVERSATION_TABLE + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        String sqlQuery1 = "CREATE TABLE " + CONVERSATION_TABLE + " (id TEXT, " +
                 C_COLUMN_NAME + " TEXT, " +
                 C_COLUMN_LAST_MESSAGE + " TEXT, " +
-                C_COLUMN_TIMESTAMP + " INTEGER)";
+                C_COLUMN_TIMESTAMP + " INTEGER, " +
+                C_COLUMN_MESSAGE_TYPE + " TEXT)";
         db.execSQL(sqlQuery1);
 
         String sqlQuery2 = "CREATE TABLE " + MESSAGE_TABLE + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 M_COLUMN_DETAIL + " TEXT, " +
                 M_COLUMN_TIME + " TEXT, " +
                 M_COLUMN_IS_SENDER + " INTEGER, " +
-                M_COLUMN_C_ID + " INTEGER, FOREIGN KEY (" + M_COLUMN_C_ID + ") REFERENCES " +
+                M_COLUMN_C_ID + " TEXT, FOREIGN KEY (" + M_COLUMN_C_ID + ") REFERENCES " +
                 CONVERSATION_TABLE + " (id) on DELETE CASCADE on UPDATE CASCADE)";
         db.execSQL(sqlQuery2);
     }

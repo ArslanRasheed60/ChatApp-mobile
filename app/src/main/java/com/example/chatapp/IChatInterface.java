@@ -13,6 +13,6 @@ public interface IChatInterface {
     public void deleteAllPersons();
     public void updatePersonConversation(String id, String message, long timeStamp);
     //message
-    public void saveMessage(Message message, int conversationID);
+    public void saveMessage(Message message, String conversationID);
     public ArrayList<Message> loadMessageList(String CID);
 }

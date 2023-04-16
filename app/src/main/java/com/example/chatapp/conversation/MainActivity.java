@@ -95,14 +95,14 @@ public class MainActivity extends AppCompatActivity {
 
             Message newMessage = new Message(MESSAGE_SENDER, convert_editText, formattedTime,0,dao );
             SRMessages.add(newMessage);
-            newMessage.save(Integer.parseInt(receiverId));
+            newMessage.save(receiverId);
             mAdaptor.notifyDataSetChanged();
             editText.setText("");
 
             //receiver
             Message newMessage2 = new Message(receiverName, RandomText.generateRandomText(80), formattedTime,1,dao );
             SRMessages.add(newMessage2);
-            newMessage2.save(Integer.parseInt(receiverId));
+            newMessage2.save(receiverId);
             mAdaptor.notifyDataSetChanged();
 
             //add message to last index of recycler view

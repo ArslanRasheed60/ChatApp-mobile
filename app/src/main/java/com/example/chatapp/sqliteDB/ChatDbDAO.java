@@ -31,9 +31,11 @@ public class ChatDbDAO implements IChatInterface {
         SQLiteDatabase db = myDataBaseHelper.getWritableDatabase();
         long timeStamp = System.currentTimeMillis();
         ContentValues cv = new ContentValues();
+        cv.put("id", person.getId());
         cv.put(C_COLUMN_NAME, person.getName());
         cv.put(C_COLUMN_LAST_MESSAGE, "");
         cv.put(C_COLUMN_TIMESTAMP, timeStamp);
+        cv.put(C_COLUMN_MESSAGE_TYPE, person.getMessageType());
         long result =  db.insert(CONVERSATION_TABLE, null, cv);
         if(result == -1){
             Toast.makeText(context, "Failed", LENGTH_SHORT).show();
@@ -51,7 +53,7 @@ public class ChatDbDAO implements IChatInterface {
             cursor = db.rawQuery(Query, null);
             //reading data
             while (cursor.moveToNext()){
-                Person person = new Person(cursor.getInt(0),cursor.getString(1), cursor.getString(2), cursor.getLong(3));
+                Person person = new Person(cursor.getString(0),cursor.getString(1), cursor.getString(2), cursor.getLong(3), cursor.getString(4));
                 personArrayList.add(person);
             }
         }
@@ -87,7 +89,7 @@ public class ChatDbDAO implements IChatInterface {
     }
 
     @Override
-    public void saveMessage(Message message, int conversationID) {
+    public void saveMessage(Message message, String conversationID) {
         SQLiteDatabase db = myDataBaseHelper.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(M_COLUMN_DETAIL, message.getMessage());
@@ -103,12 +105,13 @@ public class ChatDbDAO implements IChatInterface {
     @Override
     public ArrayList<Message> loadMessageList(String CID) {
         //SELECT c.name, m.detail, m.time, m.isSender from conversation as c JOIN message as m on c.id = m.CID where CID = '3'
+        Log.d("yyyy",CID);
         String Query = "SELECT c." + C_COLUMN_NAME +
                 ", m." + M_COLUMN_DETAIL +
                 ", m." + M_COLUMN_TIME +
                 ", m." + M_COLUMN_IS_SENDER + " FROM " +
                 CONVERSATION_TABLE + " as c JOIN " + MESSAGE_TABLE + " as m on c.id = m." +
-                M_COLUMN_C_ID + " WHERE " + M_COLUMN_C_ID + " = " + CID;
+                M_COLUMN_C_ID + " WHERE " + M_COLUMN_C_ID + " = '" + CID + "'";
         SQLiteDatabase db = myDataBaseHelper.getReadableDatabase();
         ArrayList<Message> messageArrayList= new ArrayList<>();
         Cursor cursor = null;

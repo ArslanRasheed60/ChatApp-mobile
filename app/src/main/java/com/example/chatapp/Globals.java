@@ -11,6 +11,7 @@ public class Globals {
     public static final String C_COLUMN_NAME = "person_name";
     public static final String C_COLUMN_LAST_MESSAGE = "last_message";
     public static final String C_COLUMN_TIMESTAMP = "timestamp";
+    public static final String C_COLUMN_MESSAGE_TYPE = "message_type";
     //Database Message Table
     public static final String MESSAGE_TABLE = "Message";
     public static final String M_COLUMN_DETAIL = "detail";

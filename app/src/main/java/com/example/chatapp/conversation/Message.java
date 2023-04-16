@@ -64,7 +64,7 @@ public class Message {
         this.username = username;
     }
 
-    public void save(int conversationId){
+    public void save(String conversationId){
         if (dao != null){
             Message m = new Message(username, message, time, type);
             //save in database

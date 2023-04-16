@@ -76,25 +76,27 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!isPersistenceEnabled){
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            isPersistenceEnabled = true;
-        }
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+        //firebase Auth
+//        if(!isPersistenceEnabled){
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            isPersistenceEnabled = true;
+//        }
+//        firebaseAuth = FirebaseAuth.getInstance();
+//        firebaseUser = firebaseAuth.getCurrentUser();
+//        //firebase db
+//        dao = new ChatFirebaseDAO(new ChatFirebaseDAO.DataObserver() {
+//            @Override
+//            public void update() {
+//                refresh();
+//            }
+//        });
+
+
         setContentView(R.layout.activity_conversation_main_lists);
 
         //connect databases
         //sqlite
-        //dao = new ChatDbDAO(this);
-
-        //firebase
-        dao = new ChatFirebaseDAO(new ChatFirebaseDAO.DataObserver() {
-            @Override
-            public void update() {
-                refresh();
-            }
-        });
+        dao = new ChatDbDAO(this);
 
         Globals.dao = dao;
         //load data
@@ -130,7 +132,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                             if(personTimeStamp != -1 && !Objects.equals(personLastMessage, "" ) && recyclerViewItemId != -1){
                                 for (Person person :
                                         personsList) {
-                                    if(person.getId() == Integer.parseInt(personId)){
+                                    if(Objects.equals(person.getId(), personId)){
                                         person.update(personLastMessage, personTimeStamp);
                                         break;
                                     }
@@ -163,7 +165,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     @Override
     public void onItemClick(Person person, int pos) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("id", Integer.toString(person.getId()));
+        intent.putExtra("id", person.getId());
         intent.putExtra("name", person.getName());
         intent.putExtra("recyclerViewItemId", pos);
         conversation_activity_launcher.launch(intent);
@@ -273,11 +275,17 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 //        textView.setPadding(5,15,5,15);
         textView.setHeight(250);
 
-        EditText editText = new EditText(this);
+        EditText editTextName = new EditText(this);
         textView.setBackgroundColor(backgroundColor);
-        editText.setTextColor(Color.WHITE);
-        editText.setGravity(Gravity.CENTER);
-        editText.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        editTextName.setTextColor(Color.WHITE);
+        editTextName.setGravity(Gravity.CENTER);
+        editTextName.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+
+        EditText editTextEmail = new EditText(this);
+        textView.setBackgroundColor(backgroundColor);
+        editTextEmail.setTextColor(Color.WHITE);
+        editTextEmail.setGravity(Gravity.CENTER);
+        editTextEmail.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 
         // Create the "Delete" button
         Button AddButton = new Button(this);
@@ -287,25 +295,26 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(editText.getText().toString().trim().equals("")){
+                if(editTextName.getText().toString().trim().equals("") || editTextEmail.getText().toString().trim().equals("")){
                     Toast.makeText(ConversationMainActivityLists.this, "Field is empty", Toast.LENGTH_SHORT).show();
                 }else{
                     Person newPerson;
                     if(dao instanceof ChatFirebaseDAO){
                         //getting id
-                        int max = 0;
-                        for(Person p: personsList){
-                            if (max < p.getId()){
-                                max = p.getId();
-                            }
-                        }
-                        long timeStamp = System.currentTimeMillis();
-                        newPerson = new Person(max + 1,editText.getText().toString().trim(), "" ,timeStamp,dao);
+//                        int max = 0;
+//                        for(Person p: personsList){
+//                            if (max < p.getId()){
+//                                max = p.getId();
+//                            }
+//                        }
+//                        long timeStamp = System.currentTimeMillis();
+//                        newPerson = new Person(max + 1,editText.getText().toString().trim(), "" ,timeStamp,dao);
                     }else{
-                        newPerson = new Person(editText.getText().toString().trim(), dao);
                     }
+                    newPerson = new Person(editTextEmail.getText().toString().trim(),editTextName.getText().toString().trim(), dao);
                     newPerson.save();
-                    editText.setText("");
+                    editTextName.setText("");
+                    editTextEmail.setText("");
                     personsList.add(0,newPerson);
                     myAdapt.notifyDataSetChanged();
                     addDialog.dismiss();
@@ -328,7 +337,8 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
         // Add the buttons to the layout
         layout.addView(textView);
-        layout.addView(editText);
+        layout.addView(editTextName);
+        layout.addView(editTextEmail);
         layout.addView(AddButton);
         layout.addView(cancelButton);
 

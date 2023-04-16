@@ -55,10 +55,11 @@ public class ChatFirebaseDAO implements IChatInterface {
                         String lastMessage = childSnapshot.child(C_COLUMN_LAST_MESSAGE).getValue(String.class);
                         String personName = childSnapshot.child(C_COLUMN_NAME).getValue(String.class);
                         long timestamp = childSnapshot.child(C_COLUMN_TIMESTAMP).getValue(long.class);
+                        String messageType = childSnapshot.child(C_COLUMN_MESSAGE_TYPE).getValue(String.class);
 
                         //store in array list
-                        int id = Integer.parseInt(conversationId.substring(2, conversationId.length()));
-                        Person person = new Person(id,personName, lastMessage, timestamp);
+//                        int id = Integer.parseInt(conversationId.substring(2, conversationId.length()));
+                        Person person = new Person(conversationId,personName, lastMessage, timestamp,messageType);
 
                         // Finally, you can add this conversation object to an ArrayList.
                         personArrayList.add(person);
@@ -84,7 +85,7 @@ public class ChatFirebaseDAO implements IChatInterface {
     public void savePerson(Person person) {
         myRef = database.getReference().child("ChatDb").child("Conversation");
         //making string id
-        String personId = "id" + Integer.toString(person.getId());
+        String personId = person.getId();
         //making hashmap
         Map<String, Object> childObject = new HashMap<>();
         childObject.put(C_COLUMN_NAME, person.getName());
@@ -119,7 +120,7 @@ public class ChatFirebaseDAO implements IChatInterface {
     }
 
     @Override
-    public void saveMessage(Message message, int conversationID) {
+    public void saveMessage(Message message, String conversationID) {
 
     }
 
