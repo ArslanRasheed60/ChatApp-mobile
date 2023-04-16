@@ -60,8 +60,6 @@ public class ChatFirebaseDAO implements IChatInterface {
                         int id = Integer.parseInt(conversationId.substring(2, conversationId.length()));
                         Person person = new Person(id,personName, lastMessage, timestamp);
 
-                        Log.d("yyyy", personName + "  " + lastMessage);
-
                         // Finally, you can add this conversation object to an ArrayList.
                         personArrayList.add(person);
                     }

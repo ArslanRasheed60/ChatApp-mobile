@@ -33,6 +33,7 @@ import com.example.chatapp.firebaseDb.ChatFirebaseDAO;
 import com.example.chatapp.sqliteDB.ChatDbDAO;
 import com.example.chatapp.sqliteDB.MyDataBaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -70,6 +71,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         setContentView(R.layout.activity_conversation_main_lists);
 
         //connect databases
@@ -294,11 +296,10 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                     }
                     newPerson.save();
                     editText.setText("");
-
+                    personsList.add(0,newPerson);
+                    myAdapt.notifyDataSetChanged();
+                    addDialog.dismiss();
                 }
-                Intent intent = new Intent(ConversationMainActivityLists.this, ConversationMainActivityLists.class);
-                startActivity(intent);
-                finish();
             }
         });
 
