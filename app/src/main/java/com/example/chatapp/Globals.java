@@ -2,6 +2,8 @@ package com.example.chatapp;
 
 public class Globals {
 
+    //User
+    public static String USER_EMAIL = null;
     //Message Sender
     public static final String MESSAGE_SENDER = "Arslan";
     //Database Conversation Table
@@ -18,5 +20,8 @@ public class Globals {
 
     //database
     public static IChatInterface dao;
+
+    //firebase persistance enabled
+    public static Boolean isPersistenceEnabled = false;
 
 }

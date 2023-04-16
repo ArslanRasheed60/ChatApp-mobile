@@ -12,6 +12,11 @@
                 android:title="Clear"
                 >
             </item>
+            <item
+                android:id="@+id/logoutUser"
+                android:title="Logout"
+                >
+            </item>
         </menu>
 
     </item>

@@ -1,5 +1,7 @@
 package com.example.chatapp;
 
+import static com.example.chatapp.Globals.*;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,9 +32,12 @@ import android.widget.Toast;
 
 import com.example.chatapp.conversation.MainActivity;
 import com.example.chatapp.firebaseDb.ChatFirebaseDAO;
+import com.example.chatapp.login.LoginActivity;
 import com.example.chatapp.sqliteDB.ChatDbDAO;
 import com.example.chatapp.sqliteDB.MyDataBaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -64,14 +69,19 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     //handle delete
     Boolean isOneMessageOnHold;
 
-    //handle menu and search
-    SearchView searchView;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        if(!isPersistenceEnabled){
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            isPersistenceEnabled = true;
+        }
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         setContentView(R.layout.activity_conversation_main_lists);
 
         //connect databases
@@ -373,6 +383,11 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
             isOneMessageOnHold = false;
             removeDialog.show();
             return true;
+        }else if(item.getItemId() == R.id.logoutUser){
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -40,7 +40,7 @@ public class ChatFirebaseDAO implements IChatInterface {
     public ChatFirebaseDAO(DataObserver obs){
         observer = obs;
         database = FirebaseDatabase.getInstance();
-        database.setPersistenceEnabled(true);
+//        database.setPersistenceEnabled(true);
         myRef = database.getReference().child("ChatDb").child("Conversation");
 
         //handling conversation class
