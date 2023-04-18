@@ -1,6 +1,8 @@
 package com.example.chatapp;
 
 import static com.example.chatapp.Globals.*;
+import static com.example.chatapp.R.drawable.rounded;
+import static com.example.chatapp.R.drawable.rounded_background;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -10,26 +12,40 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 
+
+import com.example.chatapp.contacts.Contact;
+import com.example.chatapp.contacts.ContactAdaptor;
 import com.example.chatapp.conversation.MainActivity;
 import com.example.chatapp.firebaseDb.ChatFirebaseDAO;
 import com.example.chatapp.login.LoginActivity;
@@ -39,11 +55,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.orhanobut.dialogplus.DialogPlus;
+import com.orhanobut.dialogplus.DialogPlusBuilder;
+import com.orhanobut.dialogplus.OnClickListener;
+import com.orhanobut.dialogplus.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ConversationMainActivityLists extends AppCompatActivity implements ConversationAdaptor.SelectItemListener{
+public class ConversationMainActivityLists extends AppCompatActivity implements ConversationAdaptor.SelectItemListener, ContactAdaptor.SelectItemListenerContact{
 
     RecyclerView recyclerView;
     FloatingActionButton add_Button;
@@ -71,6 +91,12 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
+
+    //handle contacts
+    RecyclerView contactRecyclerView;
+    ContactAdaptor contactAdaptor;
+    ArrayList<Contact> contactArrayList;
+    DialogPlus dialogPlus;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -151,6 +177,20 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         CreateAndHandleAlertBox();
         UserAddingPop();
         recyclerViewItemIdForDeletion = -1;
+
+        //handling contacts
+        dialogPlus = DialogPlus.newDialog(this).setContentHolder(new ViewHolder(R.layout.contact_list))
+                .setExpanded(true)
+                .create();
+
+        View view = dialogPlus.getHolderView();
+        contactArrayList = new ArrayList<>();
+        contactRecyclerView = view.findViewById(R.id.contactnamelists);
+        contactAdaptor = new ContactAdaptor( contactArrayList, this );
+        contactRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        contactRecyclerView.setBackgroundResource(rounded);
+        contactRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        contactRecyclerView.setAdapter(contactAdaptor);
     }
 
     public void refresh(){
@@ -250,7 +290,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         removeDialog = removeBuilder.create();
 
         // Customize the dialog box background and corners
-        removeDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background);
+        removeDialog.getWindow().setBackgroundDrawableResource(rounded_background);
     }
 
     //Pop us for adding the user
@@ -345,7 +385,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         addDialog = addBuilder.create();
 
         // Customize the dialog box background and corners
-        addDialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_background);
+        addDialog.getWindow().setBackgroundDrawableResource(rounded_background);
 
     }
 
@@ -394,7 +434,60 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
+        }else if(item.getItemId() == R.id.contacts){
+            getPhoneContacts();
+            showContactPopUp();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void getPhoneContacts(){
+        contactArrayList.removeAll(contactArrayList);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS},0);
+        }
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        Cursor cursor = contentResolver.query(uri, null, null, null, null);
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                @SuppressLint("Range")
+                String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                @SuppressLint("Range")
+                String contactNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                Contact newContact = new Contact(contactName, contactNumber);
+                contactArrayList.add(newContact);
+
+                Log.d("ccccc", contactName + "---" + contactNumber);
+            }
+        }else{
+            Toast.makeText(this,"No Contact Exists", Toast.LENGTH_SHORT).show();
+        }
+        contactAdaptor.notifyDataSetChanged();
+    }
+
+    public void showContactPopUp(){
+        dialogPlus.show();
+    }
+
+    @Override
+    public void onContactItemClick(Contact contact, int pos) {
+
+        Person newPerson;
+        String contactPhoneNumberID = contact.getPhoneNumber();
+        String contactNameId = contact.getName();
+        //add phone Number Verification;
+        if(dao instanceof ChatFirebaseDAO){
+            long timeStamp = System.currentTimeMillis();
+            newPerson = new Person(contactPhoneNumberID,contactNameId, "" ,timeStamp,MessageType.SENT.toString(),dao);
+        }else{
+            newPerson = new Person(contactPhoneNumberID,contactNameId, dao);
+        }
+        newPerson.save();
+        personsList.add(0,newPerson);
+        myAdapt.notifyDataSetChanged();
+        dialogPlus.dismiss();
     }
 }

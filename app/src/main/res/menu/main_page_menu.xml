@@ -13,6 +13,11 @@
                 >
             </item>
             <item
+                android:id="@+id/contacts"
+                android:title="Contact"
+                >
+            </item>
+            <item
                 android:id="@+id/logoutUser"
                 android:title="Logout"
                 >
