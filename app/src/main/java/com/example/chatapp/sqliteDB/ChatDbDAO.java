@@ -122,7 +122,7 @@ public class ChatDbDAO implements IChatInterface {
                 while (cursor.moveToNext()){
                     int senderType = Integer.parseInt(cursor.getString(3));
                     String username = senderType == 0 ? MESSAGE_SENDER : cursor.getString(0);
-                    Message message = new Message(username,cursor.getString(1),cursor.getString(2),senderType);
+                    Message message = new Message(username,cursor.getString(1),cursor.getLong(2),senderType);
                     messageArrayList.add(message);
                 }
             }

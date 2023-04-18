@@ -88,12 +88,8 @@ public class MainActivity extends AppCompatActivity {
         if(v.getId() == R.id.sender1TextBtn && !convert_editText.equals("")){
 
             timeStamp = System.currentTimeMillis();
-            Date dateTime = new Date(timeStamp);
-            @SuppressLint("SimpleDateFormat")
-            SimpleDateFormat formatted = new SimpleDateFormat("HH:mm: a");
-            String formattedTime = formatted.format(dateTime);
 
-            Message newMessage = new Message(MESSAGE_SENDER, convert_editText, formattedTime,0,dao );
+            Message newMessage = new Message(MESSAGE_SENDER, convert_editText, timeStamp,0,dao );
             SRMessages.add(newMessage);
             newMessage.save(receiverId);
             mAdaptor.notifyDataSetChanged();

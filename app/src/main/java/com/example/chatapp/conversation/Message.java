@@ -11,13 +11,13 @@ import java.util.Hashtable;
 
 public class Message {
     private  String message;
-    private String time;
+    private long time;
     private int type;               //0 for sender 1 for receiver
     private String username;
     private String conversation_ID;
     private transient IChatInterface dao = null;
 
-    public Message(String username, String message, String time, int type) {
+    public Message(String username, String message, long time, int type) {
         this.message = message;
         this.time = time;
         this.type = type;
@@ -25,7 +25,7 @@ public class Message {
         this.conversation_ID = "";
     }
 
-    public Message(String username, String message, String time, int type, IChatInterface dao) {
+    public Message(String username, String message, long time, int type, IChatInterface dao) {
         this.message = message;
         this.time = time;
         this.type = type;
@@ -34,7 +34,7 @@ public class Message {
         this.dao = dao;
     }
 
-    public Message(String username, String message, String time, int type, String conversation_ID) {
+    public Message(String username, String message, long time, int type, String conversation_ID) {
         this.message = message;
         this.time = time;
         this.type = type;
@@ -42,7 +42,7 @@ public class Message {
         this.conversation_ID = conversation_ID;
     }
 
-    public Message(String username, String message, String time, int type, String conversation_ID ,IChatInterface dao) {
+    public Message(String username, String message, long time, int type, String conversation_ID ,IChatInterface dao) {
         this.message = message;
         this.time = time;
         this.type = type;
@@ -60,11 +60,11 @@ public class Message {
         this.message = message;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 

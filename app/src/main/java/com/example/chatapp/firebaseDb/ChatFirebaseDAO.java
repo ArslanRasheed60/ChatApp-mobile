@@ -131,7 +131,7 @@ public class ChatFirebaseDAO implements IChatInterface {
                         String messageId = childSnapshot.getKey();
                         String messsageUsername = childSnapshot.child(M_COLUMN_USERNAME).getValue(String.class);
                         String messageDetail = childSnapshot.child(M_COLUMN_DETAIL).getValue(String.class);
-                        String messageTime = childSnapshot.child(M_COLUMN_TIME).getValue(String.class);
+                        long messageTime = childSnapshot.child(M_COLUMN_TIME).getValue(Long.class);
                         int messageIsSender = childSnapshot.child(M_COLUMN_IS_SENDER).getValue(int.class);
                         String messagePersonId = childSnapshot.child(M_COLUMN_C_ID).getValue(String.class);
 
@@ -261,6 +261,7 @@ public class ChatFirebaseDAO implements IChatInterface {
                 }
             }
         }
+        filteredMessageList.sort(Comparator.comparingLong(Message::getTime));
         return filteredMessageList;
     }
 }
