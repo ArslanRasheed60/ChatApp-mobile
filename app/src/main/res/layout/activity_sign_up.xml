@@ -24,10 +24,10 @@
         android:layout_marginBottom="5dp"
         />
     <EditText
-        android:id="@+id/signUpEmail"
+        android:id="@+id/signUpPhoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Email"
+        android:hint="Enter Phone Number"
         android:layout_marginBottom="5dp"
         />
     <EditText

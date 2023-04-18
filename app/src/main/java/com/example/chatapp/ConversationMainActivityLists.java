@@ -77,26 +77,26 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //firebase Auth
-//        if(!isPersistenceEnabled){
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//            isPersistenceEnabled = true;
-//        }
-//        firebaseAuth = FirebaseAuth.getInstance();
-//        firebaseUser = firebaseAuth.getCurrentUser();
-//        //firebase db
-//        dao = new ChatFirebaseDAO(new ChatFirebaseDAO.DataObserver() {
-//            @Override
-//            public void update() {
-//                refresh();
-//            }
-//        });
+        if(!isPersistenceEnabled){
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            isPersistenceEnabled = true;
+        }
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        //firebase db
+        dao = new ChatFirebaseDAO(new ChatFirebaseDAO.DataObserver() {
+            @Override
+            public void update() {
+                refresh();
+            }
+        });
 
 
         setContentView(R.layout.activity_conversation_main_lists);
 
         //connect databases
         //sqlite
-        dao = new ChatDbDAO(this);
+//        dao = new ChatDbDAO(this);
 
         Globals.dao = dao;
         //load data

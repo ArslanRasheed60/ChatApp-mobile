@@ -24,5 +24,9 @@ public class Globals {
 
     //firebase persistance enabled
     public static Boolean isPersistenceEnabled = false;
+    //firebase constants
+    public static String Full_Name = "full_name";
+    public static final String Email_Extension = "@chatapp.com";
+    public static final String CHAT_DB = "ChatDb";
 
 }

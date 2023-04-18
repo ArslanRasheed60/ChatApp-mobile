@@ -10,6 +10,8 @@ import com.example.chatapp.ConversationMainActivityLists;
 import com.example.chatapp.IChatInterface;
 import com.example.chatapp.Person;
 import com.example.chatapp.conversation.Message;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,11 +39,23 @@ public class ChatFirebaseDAO implements IChatInterface {
     ArrayList<Person> personArrayList;
     ArrayList<Message> messageArrayList;
 
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
+    String userPhoneNumber;
+
     public ChatFirebaseDAO(DataObserver obs){
+
+        //firebase auth and user
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        String email = firebaseUser.getEmail();
+        userPhoneNumber = email.substring(0,11);
+
+
         observer = obs;
         database = FirebaseDatabase.getInstance();
 //        database.setPersistenceEnabled(true);
-        myRef = database.getReference().child("ChatDb").child("Conversation");
+        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber);
 
         //handling conversation class
         myRef.addValueEventListener(new ValueEventListener() {
@@ -51,18 +65,18 @@ public class ChatFirebaseDAO implements IChatInterface {
                     personArrayList = new ArrayList<>();
 
                     for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                        String conversationId = childSnapshot.getKey();
-                        String lastMessage = childSnapshot.child(C_COLUMN_LAST_MESSAGE).getValue(String.class);
-                        String personName = childSnapshot.child(C_COLUMN_NAME).getValue(String.class);
-                        long timestamp = childSnapshot.child(C_COLUMN_TIMESTAMP).getValue(long.class);
-                        String messageType = childSnapshot.child(C_COLUMN_MESSAGE_TYPE).getValue(String.class);
-
-                        //store in array list
-//                        int id = Integer.parseInt(conversationId.substring(2, conversationId.length()));
-                        Person person = new Person(conversationId,personName, lastMessage, timestamp,messageType);
-
-                        // Finally, you can add this conversation object to an ArrayList.
-                        personArrayList.add(person);
+//                        String conversationId = childSnapshot.getKey();
+//                        String lastMessage = childSnapshot.child(C_COLUMN_LAST_MESSAGE).getValue(String.class);
+//                        String personName = childSnapshot.child(C_COLUMN_NAME).getValue(String.class);
+//                        long timestamp = childSnapshot.child(C_COLUMN_TIMESTAMP).getValue(long.class);
+//                        String messageType = childSnapshot.child(C_COLUMN_MESSAGE_TYPE).getValue(String.class);
+//
+//                        //store in array list
+////                        int id = Integer.parseInt(conversationId.substring(2, conversationId.length()));
+//                        Person person = new Person(conversationId,personName, lastMessage, timestamp,messageType);
+//
+//                        // Finally, you can add this conversation object to an ArrayList.
+//                        personArrayList.add(person);
                     }
 
                     observer.update();

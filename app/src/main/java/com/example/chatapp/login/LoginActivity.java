@@ -1,5 +1,7 @@
 package com.example.chatapp.login;
 
+import static com.example.chatapp.Globals.*;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,7 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText loginEmail, loginPassword;
+    EditText loginPhoneNumber, loginPassword;
     Button loginVerify, signUp;
     FirebaseAuth firebaseAuth;
     @Override
@@ -31,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
 
-        loginEmail = findViewById(R.id.loginEmail);
+        loginPhoneNumber = findViewById(R.id.loginPhoneNumber);
         loginPassword = findViewById(R.id.loginPassword);
         loginVerify = findViewById(R.id.loginVerify);
         signUp = findViewById(R.id.signUp);
@@ -49,12 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         loginVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = loginEmail.getText().toString().trim();
+                String phoneNumber = loginPhoneNumber.getText().toString().trim();
                 String password = loginPassword.getText().toString().trim();
-                if(email.equals("") || password.equals("")){
+                if(phoneNumber.equals("") || password.equals("")){
                     Toast.makeText(LoginActivity.this, "Field is Empty", Toast.LENGTH_SHORT).show();
                 }else{
-                    firebaseAuth.signInWithEmailAndPassword(email, password)
+                    firebaseAuth.signInWithEmailAndPassword(phoneNumber + Email_Extension, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
