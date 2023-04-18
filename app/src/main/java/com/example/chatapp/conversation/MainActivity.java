@@ -1,5 +1,7 @@
 package com.example.chatapp.conversation;
 
+import static com.example.chatapp.Globals.CHAT_DB;
+import static com.example.chatapp.Globals.Full_Name;
 import static com.example.chatapp.Globals.MESSAGE_SENDER;
 
 import androidx.annotation.RequiresApi;
@@ -22,6 +24,8 @@ import com.example.chatapp.IChatInterface;
 import com.example.chatapp.sqliteDB.ChatDbDAO;
 import com.example.chatapp.R;
 import com.example.chatapp.RandomText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 //    MyDataBaseHelper myDB;
     IChatInterface dao;
     long timeStamp;
+    String Sender_Name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +81,21 @@ public class MainActivity extends AppCompatActivity {
 
 
         timeStamp = -1;
+        //getting sender name
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference reference = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(Full_Name);
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                String fullName = dataSnapshot.getValue(String.class);
+//                // do something with the fullName value
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // handle the error
+//            }
+//        });
     }
 
 

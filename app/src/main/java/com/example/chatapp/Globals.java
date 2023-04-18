@@ -5,7 +5,7 @@ public class Globals {
     //User
     public static String USER_EMAIL = null;
     //Message Sender
-    public static String MESSAGE_SENDER;
+    public static String MESSAGE_SENDER = "temporary";
     //Database Conversation Table
     public static final String CONVERSATION_TABLE = "Conversation";
     public static final String C_COLUMN_NAME = "person_name";

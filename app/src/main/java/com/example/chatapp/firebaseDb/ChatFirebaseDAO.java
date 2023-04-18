@@ -45,6 +45,7 @@ public class ChatFirebaseDAO implements IChatInterface {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     String userPhoneNumber;
+    String userName;
 
     public ChatFirebaseDAO(DataObserver obs){
 
@@ -58,17 +59,15 @@ public class ChatFirebaseDAO implements IChatInterface {
         database = FirebaseDatabase.getInstance();
 
         //setting full name
-        myRef = database.getReference().child(CHAT_DB);
+        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(Full_Name);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
-                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                        String userID = childSnapshot.getKey();
-                        MESSAGE_SENDER = childSnapshot.child(Full_Name).getValue(String.class);
-                    }
+                    userName = dataSnapshot.getValue(String.class);
+                    MESSAGE_SENDER = userName;
                     observer.update();
-                    Log.d("yyyyy",MESSAGE_SENDER);
+                    Log.d("yyyyy",userName);
                 }
                 catch (Exception ex) {
                     Log.e("firebasedb", ex.getMessage());
@@ -214,7 +213,7 @@ public class ChatFirebaseDAO implements IChatInterface {
         myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(MESSAGE_TABLE);
         String messageId = UUID.randomUUID().toString();
         Map<String, Object> childObject = new HashMap<>();
-        childObject.put(M_COLUMN_USERNAME, message.getUsername());
+        childObject.put(M_COLUMN_USERNAME, userName);
         childObject.put(M_COLUMN_DETAIL, message.getMessage());
         childObject.put(M_COLUMN_TIME, message.getTime());
         childObject.put(M_COLUMN_IS_SENDER, 0);
@@ -225,7 +224,7 @@ public class ChatFirebaseDAO implements IChatInterface {
         myRef = database.getReference().child(CHAT_DB).child(conversationID).child(MESSAGE_TABLE);
         String messageId2 = UUID.randomUUID().toString();
         Map<String, Object> childObject2 = new HashMap<>();
-        childObject2.put(M_COLUMN_USERNAME, message.getUsername());
+        childObject2.put(M_COLUMN_USERNAME, userName);
         childObject2.put(M_COLUMN_DETAIL, message.getMessage());
         childObject2.put(M_COLUMN_TIME, message.getTime());
         childObject2.put(M_COLUMN_IS_SENDER, 1);
@@ -239,7 +238,7 @@ public class ChatFirebaseDAO implements IChatInterface {
         String personId = userPhoneNumber;
         //making hashmap
         Map<String, Object> childObject3 = new HashMap<>();
-        childObject3.put(C_COLUMN_NAME, message.getUsername());
+        childObject3.put(C_COLUMN_NAME, userName);
         childObject3.put(C_COLUMN_LAST_MESSAGE, message.getMessage());
         childObject3.put(C_COLUMN_TIMESTAMP, System.currentTimeMillis());
         childObject3.put(C_COLUMN_MESSAGE_TYPE, MessageType.RECEIVED.toString());
