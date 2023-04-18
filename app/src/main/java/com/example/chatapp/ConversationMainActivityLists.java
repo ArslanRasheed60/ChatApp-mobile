@@ -281,11 +281,11 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         editTextName.setGravity(Gravity.CENTER);
         editTextName.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 
-        EditText editTextEmail = new EditText(this);
+        EditText editTextPhoneNumber = new EditText(this);
         textView.setBackgroundColor(backgroundColor);
-        editTextEmail.setTextColor(Color.WHITE);
-        editTextEmail.setGravity(Gravity.CENTER);
-        editTextEmail.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        editTextPhoneNumber.setTextColor(Color.WHITE);
+        editTextPhoneNumber.setGravity(Gravity.CENTER);
+        editTextPhoneNumber.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 
         // Create the "Delete" button
         Button AddButton = new Button(this);
@@ -295,26 +295,22 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         AddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(editTextName.getText().toString().trim().equals("") || editTextEmail.getText().toString().trim().equals("")){
+                if(editTextName.getText().toString().trim().equals("") || editTextPhoneNumber.getText().toString().trim().equals("")){
                     Toast.makeText(ConversationMainActivityLists.this, "Field is empty", Toast.LENGTH_SHORT).show();
                 }else{
                     Person newPerson;
+
+                    String phoneNumber_ID = editTextPhoneNumber.getText().toString().trim();
+                    //add phone Number Verification;
                     if(dao instanceof ChatFirebaseDAO){
-                        //getting id
-//                        int max = 0;
-//                        for(Person p: personsList){
-//                            if (max < p.getId()){
-//                                max = p.getId();
-//                            }
-//                        }
-//                        long timeStamp = System.currentTimeMillis();
-//                        newPerson = new Person(max + 1,editText.getText().toString().trim(), "" ,timeStamp,dao);
+                        long timeStamp = System.currentTimeMillis();
+                        newPerson = new Person(phoneNumber_ID,editTextName.getText().toString().trim(), "" ,timeStamp,MessageType.SENT.toString(),dao);
                     }else{
+                        newPerson = new Person(phoneNumber_ID,editTextName.getText().toString().trim(), dao);
                     }
-                    newPerson = new Person(editTextEmail.getText().toString().trim(),editTextName.getText().toString().trim(), dao);
                     newPerson.save();
                     editTextName.setText("");
-                    editTextEmail.setText("");
+                    editTextPhoneNumber.setText("");
                     personsList.add(0,newPerson);
                     myAdapt.notifyDataSetChanged();
                     addDialog.dismiss();
@@ -338,7 +334,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         // Add the buttons to the layout
         layout.addView(textView);
         layout.addView(editTextName);
-        layout.addView(editTextEmail);
+        layout.addView(editTextPhoneNumber);
         layout.addView(AddButton);
         layout.addView(cancelButton);
 

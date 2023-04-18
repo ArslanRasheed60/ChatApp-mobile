@@ -55,7 +55,7 @@ public class ChatFirebaseDAO implements IChatInterface {
         observer = obs;
         database = FirebaseDatabase.getInstance();
 //        database.setPersistenceEnabled(true);
-        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber);
+        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(CONVERSATION_TABLE);
 
         //handling conversation class
         myRef.addValueEventListener(new ValueEventListener() {
@@ -65,18 +65,18 @@ public class ChatFirebaseDAO implements IChatInterface {
                     personArrayList = new ArrayList<>();
 
                     for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-//                        String conversationId = childSnapshot.getKey();
-//                        String lastMessage = childSnapshot.child(C_COLUMN_LAST_MESSAGE).getValue(String.class);
-//                        String personName = childSnapshot.child(C_COLUMN_NAME).getValue(String.class);
-//                        long timestamp = childSnapshot.child(C_COLUMN_TIMESTAMP).getValue(long.class);
-//                        String messageType = childSnapshot.child(C_COLUMN_MESSAGE_TYPE).getValue(String.class);
-//
-//                        //store in array list
-////                        int id = Integer.parseInt(conversationId.substring(2, conversationId.length()));
-//                        Person person = new Person(conversationId,personName, lastMessage, timestamp,messageType);
-//
-//                        // Finally, you can add this conversation object to an ArrayList.
-//                        personArrayList.add(person);
+                        String conversationId = childSnapshot.getKey();
+                        String lastMessage = childSnapshot.child(C_COLUMN_LAST_MESSAGE).getValue(String.class);
+                        String personName = childSnapshot.child(C_COLUMN_NAME).getValue(String.class);
+                        long timestamp = childSnapshot.child(C_COLUMN_TIMESTAMP).getValue(long.class);
+                        String messageType = childSnapshot.child(C_COLUMN_MESSAGE_TYPE).getValue(String.class);
+
+                        //store in array list
+//                        int id = Integer.parseInt(conversationId.substring(2, conversationId.length()));
+                        Person person = new Person(conversationId,personName, lastMessage, timestamp,messageType);
+
+                        // Finally, you can add this conversation object to an ArrayList.
+                        personArrayList.add(person);
                     }
 
                     observer.update();
@@ -97,7 +97,7 @@ public class ChatFirebaseDAO implements IChatInterface {
 
     @Override
     public void savePerson(Person person) {
-        myRef = database.getReference().child("ChatDb").child("Conversation");
+        myRef = database.getReference().child("ChatDb").child(userPhoneNumber).child(CONVERSATION_TABLE);
         //making string id
         String personId = person.getId();
         //making hashmap
@@ -105,6 +105,7 @@ public class ChatFirebaseDAO implements IChatInterface {
         childObject.put(C_COLUMN_NAME, person.getName());
         childObject.put(C_COLUMN_LAST_MESSAGE, person.getLastMessage());
         childObject.put(C_COLUMN_TIMESTAMP, person.getTimeStamp());
+        childObject.put(C_COLUMN_MESSAGE_TYPE, person.getMessageType());
 
         myRef.child(personId).setValue(childObject);
     }
