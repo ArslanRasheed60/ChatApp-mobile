@@ -110,11 +110,12 @@ public class Person {
         }
     }
 
-    public void update(String lastMessage, long timeStamp){
+    public void update(String lastMessage, long timeStamp, String messageType){
         this.last_message = lastMessage;
         this.timestamp = timeStamp;
+        this.messageType = messageType;
         if(dao != null){
-            dao.updatePersonConversation(this.getId(), this.getLastMessage(), this.getTimeStamp());
+            dao.updatePersonConversation(this);
         }
     }
 

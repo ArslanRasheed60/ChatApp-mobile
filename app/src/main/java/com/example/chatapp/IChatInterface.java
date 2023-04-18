@@ -11,7 +11,7 @@ public interface IChatInterface {
     public ArrayList<Person> loadPersonList();
     public void deleteOnePerson(String id);
     public void deleteAllPersons();
-    public void updatePersonConversation(String id, String message, long timeStamp);
+    public void updatePersonConversation(Person person);
     //message
     public void saveMessage(Message message, String conversationID);
     public ArrayList<Message> loadMessageList(String CID);

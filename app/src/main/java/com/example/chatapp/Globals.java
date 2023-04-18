@@ -5,7 +5,7 @@ public class Globals {
     //User
     public static String USER_EMAIL = null;
     //Message Sender
-    public static final String MESSAGE_SENDER = "Arslan";
+    public static String MESSAGE_SENDER;
     //Database Conversation Table
     public static final String CONVERSATION_TABLE = "Conversation";
     public static final String C_COLUMN_NAME = "person_name";
@@ -14,6 +14,7 @@ public class Globals {
     public static final String C_COLUMN_MESSAGE_TYPE = "message_type";
     //Database Message Table
     public static final String MESSAGE_TABLE = "Message";
+    public static final String M_COLUMN_USERNAME = "username";
     public static final String M_COLUMN_DETAIL = "detail";
     public static final String M_COLUMN_TIME = "time";
     public static final String M_COLUMN_IS_SENDER = "is_sender";

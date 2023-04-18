@@ -14,6 +14,7 @@ public class Message {
     private String time;
     private int type;               //0 for sender 1 for receiver
     private String username;
+    private String conversation_ID;
     private transient IChatInterface dao = null;
 
     public Message(String username, String message, String time, int type) {
@@ -21,6 +22,7 @@ public class Message {
         this.time = time;
         this.type = type;
         this.username = username;
+        this.conversation_ID = "";
     }
 
     public Message(String username, String message, String time, int type, IChatInterface dao) {
@@ -28,6 +30,24 @@ public class Message {
         this.time = time;
         this.type = type;
         this.username = username;
+        this.conversation_ID = "";
+        this.dao = dao;
+    }
+
+    public Message(String username, String message, String time, int type, String conversation_ID) {
+        this.message = message;
+        this.time = time;
+        this.type = type;
+        this.username = username;
+        this.conversation_ID = conversation_ID;
+    }
+
+    public Message(String username, String message, String time, int type, String conversation_ID ,IChatInterface dao) {
+        this.message = message;
+        this.time = time;
+        this.type = type;
+        this.username = username;
+        this.conversation_ID = conversation_ID;
         this.dao = dao;
     }
 
@@ -78,6 +98,7 @@ public class Message {
             this.message = message.getMessage();
             time = message.getTime();
             type = message.getType();
+            conversation_ID = message.getConversation_ID();
         }
     }
 
@@ -86,10 +107,14 @@ public class Message {
         if(dao != null){
             ArrayList<Message> objects = dao.loadMessageList(receiverId);
             for(Message obj : objects){
-                Message message1 = new Message(obj.getUsername(), obj.getMessage(), obj.getTime(), obj.getType(),dao);
+                Message message1 = new Message(obj.getUsername(), obj.getMessage(), obj.getTime(), obj.getType(),obj.getConversation_ID(),dao);
                 messages.add(message1);
             }
         }
         return messages;
+    }
+
+    public String getConversation_ID() {
+        return conversation_ID;
     }
 }

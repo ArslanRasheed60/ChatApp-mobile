@@ -76,17 +76,18 @@ public class ChatDbDAO implements IChatInterface {
     }
 
     @Override
-    public void updatePersonConversation(String id, String message, long timeStamp) {
+    public void updatePersonConversation(Person person) {
         SQLiteDatabase db = myDataBaseHelper.getWritableDatabase();
         ContentValues content = new ContentValues();
-        content.put(C_COLUMN_LAST_MESSAGE, message);
-        content.put(C_COLUMN_TIMESTAMP, timeStamp);
+        content.put(C_COLUMN_LAST_MESSAGE, person.getLastMessage());
+        content.put(C_COLUMN_TIMESTAMP, person.getTimeStamp());
 
-        long result = db.update(CONVERSATION_TABLE, content, "id=?", new String[]{id});
+        long result = db.update(CONVERSATION_TABLE, content, "id=?", new String[]{person.getId()});
         if (result == -1){
             Toast.makeText(context, "Failed to update!", LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void saveMessage(Message message, String conversationID) {

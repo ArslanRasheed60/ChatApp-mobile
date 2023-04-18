@@ -133,7 +133,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                                 for (Person person :
                                         personsList) {
                                     if(Objects.equals(person.getId(), personId)){
-                                        person.update(personLastMessage, personTimeStamp);
+                                        person.update(personLastMessage, personTimeStamp, MessageType.SENT.toString());
                                         break;
                                     }
                                 }

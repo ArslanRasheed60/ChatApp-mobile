@@ -26,6 +26,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.ktx.Firebase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SignUpActivity extends AppCompatActivity {
 
     EditText signUpName, signUpPhoneNumber, signUpPassword;
@@ -69,17 +72,17 @@ public class SignUpActivity extends AppCompatActivity {
                                             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
                                             isPersistenceEnabled = true;
                                         }
-                                        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference(CHAT_DB);
-                                        usersRef.child(phoneNumber).child(Full_Name).setValue(name);
-                                        usersRef.child(phoneNumber).child(CONVERSATION_TABLE).setValue(null);
-                                        usersRef.child(phoneNumber).child(MESSAGE_TABLE).setValue(null);
+                                        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child(CHAT_DB);
+                                        Map<String, Object> childObject = new HashMap<>();
+                                        childObject.put(Full_Name, name);
+                                        usersRef.child(phoneNumber).setValue(childObject);
                                         //switch to main activity
                                         Intent intent = new Intent(getApplicationContext(), ConversationMainActivityLists.class);
                                         startActivity(intent);
                                         finish();
                                     } else {
                                         // If sign in fails, display a message to the user.
-                                        Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                        Toast.makeText(SignUpActivity.this, "Authentication failed. User Already Exists",
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }

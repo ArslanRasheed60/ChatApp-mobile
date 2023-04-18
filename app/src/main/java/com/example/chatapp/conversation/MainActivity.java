@@ -99,11 +99,11 @@ public class MainActivity extends AppCompatActivity {
             mAdaptor.notifyDataSetChanged();
             editText.setText("");
 
-            //receiver
-            Message newMessage2 = new Message(receiverName, RandomText.generateRandomText(80), formattedTime,1,dao );
-            SRMessages.add(newMessage2);
-            newMessage2.save(receiverId);
-            mAdaptor.notifyDataSetChanged();
+//            //receiver
+//            Message newMessage2 = new Message(receiverName, RandomText.generateRandomText(80), formattedTime,1,dao );
+//            SRMessages.add(newMessage2);
+//            newMessage2.save(receiverId);
+//            mAdaptor.notifyDataSetChanged();
 
             //add message to last index of recycler view
             recyclerViewMessageLists.scrollToPosition(mAdaptor.getItemCount() - 1);
