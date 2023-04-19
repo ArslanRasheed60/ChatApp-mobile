@@ -98,6 +98,8 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
     ArrayList<Contact> contactArrayList;
     DialogPlus dialogPlus;
 
+    private static final int CONTACT_PICKER_REQUEST = 1;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -434,11 +436,44 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
-        }else if(item.getItemId() == R.id.contacts){
+        }else if(item.getItemId() == R.id.contacts1){
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            startActivityForResult(intent, CONTACT_PICKER_REQUEST);
+        }else if(item.getItemId() == R.id.contacts2){
             getPhoneContacts();
             showContactPopUp();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONTACT_PICKER_REQUEST && resultCode == RESULT_OK) {
+            // The user selected a contact
+            Uri contactUri = data.getData();
+
+            // Use the contactUri to query the contact data
+            Cursor cursor = getContentResolver().query(contactUri, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                // Get the contact name and phone number
+                @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                Person newPerson;
+                if(dao instanceof ChatFirebaseDAO){
+                    long timeStamp = System.currentTimeMillis();
+                    newPerson = new Person(phoneNumber,name, "" ,timeStamp,MessageType.SENT.toString(),dao);
+                }else{
+                    newPerson = new Person(phoneNumber,name, dao);
+                }
+                newPerson.save();
+                personsList.add(0,newPerson);
+                myAdapt.notifyDataSetChanged();
+
+                cursor.close();
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

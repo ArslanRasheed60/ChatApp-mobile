@@ -1,5 +1,7 @@
 package com.example.chatapp;
 
+import java.nio.charset.StandardCharsets;
+
 public class Globals {
 
     //User

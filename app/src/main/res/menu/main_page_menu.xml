@@ -13,8 +13,13 @@
                 >
             </item>
             <item
-                android:id="@+id/contacts"
-                android:title="Contact"
+                android:id="@+id/contacts1"
+                android:title="Contact1"
+                >
+            </item>
+            <item
+                android:id="@+id/contacts2"
+                android:title="Contact2"
                 >
             </item>
             <item
