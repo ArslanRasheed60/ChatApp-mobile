@@ -75,5 +75,12 @@
         android:layout_marginBottom="5dp"
         />
 
+    <ProgressBar
+        android:id="@+id/signUp_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

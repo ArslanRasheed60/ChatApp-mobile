@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     EditText signUpName, signUpPhoneNumber, signUpPassword;
     TextView popUpPhoneNumber, popUpPassword;
+    ProgressBar progressBar;
     Button login, signUpVerify;
     FirebaseAuth firebaseAuth;
     boolean isPhoneNumberSatisfyFormat = false;
@@ -52,6 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
         signUpPassword = findViewById(R.id.signUpPassword);
         popUpPhoneNumber = findViewById(R.id.popUpSignUpPhoneNumber);
         popUpPassword = findViewById(R.id.popUpSignUpPassword);
+        progressBar = findViewById(R.id.signUp_progress);
 
         login = findViewById(R.id.login);
         signUpVerify = findViewById(R.id.signUpVerify);
@@ -154,6 +157,7 @@ public class SignUpActivity extends AppCompatActivity {
         signUpVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 String name = signUpName.getText().toString().trim();
                 String phoneNumber = signUpPhoneNumber.getText().toString().trim();
                 String password = signUpPassword.getText().toString().trim();
@@ -161,6 +165,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if( name.equals("") || phoneNumber.equals("") || password.equals("")){
                     Toast.makeText(SignUpActivity.this, "Field is Empty", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                 }else{
                     firebaseAuth.createUserWithEmailAndPassword(phoneNumber + Email_Extension, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -178,6 +183,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         Map<String, Object> childObject = new HashMap<>();
                                         childObject.put(Full_Name, name);
                                         usersRef.child(phoneNumber).setValue(childObject);
+                                        progressBar.setVisibility(View.GONE);
                                         //switch to main activity
                                         Intent intent = new Intent(getApplicationContext(), ConversationMainActivityLists.class);
                                         startActivity(intent);
@@ -186,6 +192,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(SignUpActivity.this, "Authentication failed. User Already Exists",
                                                 Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
                                     }
                                 }
                             });
