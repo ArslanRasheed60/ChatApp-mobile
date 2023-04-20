@@ -23,12 +23,34 @@
         android:hint="Enter Name"
         android:layout_marginBottom="5dp"
         />
+    <TextView
+        android:id="@+id/popUpSignUpPhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/rounded_background"
+        android:backgroundTint="@color/Red"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:paddingHorizontal="10dp"
+        />
     <EditText
         android:id="@+id/signUpPhoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Phone Number"
         android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:id="@+id/popUpSignUpPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/rounded_background"
+        android:backgroundTint="@color/Red"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        android:paddingHorizontal="10dp"
         />
     <EditText
         android:id="@+id/signUpPassword"
@@ -43,6 +65,7 @@
         android:layout_height="wrap_content"
         android:text="Sign up"
         android:layout_marginBottom="15dp"
+        android:enabled="false"
         />
     <Button
         android:id="@+id/login"

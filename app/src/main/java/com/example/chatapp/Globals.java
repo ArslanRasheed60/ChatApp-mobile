@@ -31,5 +31,13 @@ public class Globals {
     public static String Full_Name = "full_name";
     public static final String Email_Extension = "@chatapp.com";
     public static final String CHAT_DB = "ChatDb";
+    // functions
+    public static boolean verifyPhoneNumber(String phoneNumber){
+        if(phoneNumber.length() != 11 ||
+                !phoneNumber.startsWith(String.valueOf(0))){
+            return false;
+        }
+        return true;
+    }
 
 }
