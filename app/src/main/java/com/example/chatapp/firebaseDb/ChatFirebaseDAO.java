@@ -6,11 +6,15 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.chatapp.ConversationMainActivityLists;
 import com.example.chatapp.IChatInterface;
 import com.example.chatapp.MessageType;
 import com.example.chatapp.Person;
 import com.example.chatapp.conversation.Message;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -184,12 +188,15 @@ public class ChatFirebaseDAO implements IChatInterface {
 
     @Override
     public void deleteOnePerson(String id) {
-
+        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(CONVERSATION_TABLE).child(id);
+        myRef.removeValue();
     }
 
     @Override
     public void deleteAllPersons() {
-
+        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(CONVERSATION_TABLE);
+        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(MESSAGE_TABLE);
+        myRef.removeValue();
     }
 
     @Override
