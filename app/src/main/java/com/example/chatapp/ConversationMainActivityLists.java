@@ -48,6 +48,7 @@ import android.Manifest;
 import com.example.chatapp.contacts.Contact;
 import com.example.chatapp.contacts.ContactAdaptor;
 import com.example.chatapp.conversation.MainActivity;
+import com.example.chatapp.conversation.MessageViewModel;
 import com.example.chatapp.firebaseDb.ChatFirebaseDAO;
 import com.example.chatapp.login.LoginActivity;
 import com.example.chatapp.sqliteDB.ChatDbDAO;
@@ -72,6 +73,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
     IChatInterface dao;
     public ArrayList<Person>  personsList;
+    ConversationViewModel vm;
 
     ConversationAdaptor myAdapt;
     ConversationAdaptor.SelectItemListener listener;
@@ -129,7 +131,10 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
         Globals.dao = dao;
         //load data
-        personsList = Person.load(dao);
+        vm = new ViewModelProvider(this).get(ConversationViewModel.class);
+        vm.setDao(dao);
+        personsList = vm.getConversations(savedInstanceState, "data");
+//        personsList = Person.load(dao);
 //        personsList = new ArrayList<>();
 
         recyclerView = findViewById(R.id.ConversationMessageLists);
