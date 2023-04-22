@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chatapp.Person;
 import com.example.chatapp.R;
 
 import java.text.SimpleDateFormat;
@@ -76,6 +77,11 @@ public MessageAdaptor(ArrayList<Message> messages){
     @Override
     public int getItemCount() {
         return messages.size();
+    }
+
+    public void updateData(ArrayList<Message> ds){
+        messages = ds;
+        notifyDataSetChanged();
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder{

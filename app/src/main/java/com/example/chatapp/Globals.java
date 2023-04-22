@@ -37,4 +37,14 @@ public class Globals {
                 phoneNumber.startsWith(String.valueOf(0));
     }
 
+    public static String formatPhoneNumber(String phoneNumber){
+        if(phoneNumber.startsWith("+92")){
+            phoneNumber = phoneNumber.replaceAll("\\s", "");
+            phoneNumber = "0" + phoneNumber.substring(phoneNumber.length() - 10);
+            if(phoneNumber.length() == 11){
+                return phoneNumber;
+            }
+        }
+        return "-1";
+    }
 }

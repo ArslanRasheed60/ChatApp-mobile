@@ -240,18 +240,27 @@ public class ChatFirebaseDAO implements IChatInterface {
 
         myRef.child(messageId2).setValue(childObject2);
 
-        //update receiver conversation row
-        myRef = database.getReference().child(CHAT_DB).child(conversationID).child(CONVERSATION_TABLE);
-        //making string id
-        String personId = userPhoneNumber;
+        //update sender conversation row
+        myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(CONVERSATION_TABLE);
         //making hashmap
         Map<String, Object> childObject3 = new HashMap<>();
-        childObject3.put(C_COLUMN_NAME, userName);
         childObject3.put(C_COLUMN_LAST_MESSAGE, message.getMessage());
         childObject3.put(C_COLUMN_TIMESTAMP, System.currentTimeMillis());
-        childObject3.put(C_COLUMN_MESSAGE_TYPE, MessageType.RECEIVED.toString());
+        childObject3.put(C_COLUMN_MESSAGE_TYPE, MessageType.SENT.toString());
 
-        myRef.child(userPhoneNumber).updateChildren(childObject3);
+        myRef.child(conversationID).updateChildren(childObject3);
+
+
+        //update receiver conversation row
+        myRef = database.getReference().child(CHAT_DB).child(conversationID).child(CONVERSATION_TABLE);
+        //making hashmap
+        Map<String, Object> childObject4 = new HashMap<>();
+        childObject4.put(C_COLUMN_NAME, userName);
+        childObject4.put(C_COLUMN_LAST_MESSAGE, message.getMessage());
+        childObject4.put(C_COLUMN_TIMESTAMP, System.currentTimeMillis());
+        childObject4.put(C_COLUMN_MESSAGE_TYPE, MessageType.RECEIVED.toString());
+
+        myRef.child(userPhoneNumber).updateChildren(childObject4);
 
     }
 

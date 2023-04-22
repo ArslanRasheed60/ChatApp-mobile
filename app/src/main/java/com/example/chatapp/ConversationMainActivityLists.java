@@ -169,6 +169,7 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                                 //move person to the top of the list
                                 Person updatedItem = personsList.remove(recyclerViewItemId);
                                 personsList.add(0, updatedItem);
+                                refresh();
                             }
                             myAdapt.notifyDataSetChanged();
                         }
@@ -345,19 +346,23 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 }else{
                     Person newPerson;
 
-                    String phoneNumber_ID = editTextPhoneNumber.getText().toString().trim();
-                    //add phone Number Verification;
-                    if(dao instanceof ChatFirebaseDAO){
-                        long timeStamp = System.currentTimeMillis();
-                        newPerson = new Person(phoneNumber_ID,editTextName.getText().toString().trim(), "" ,timeStamp,MessageType.SENT.toString(),dao);
+                    String phoneNumber_ID = formatPhoneNumber(editTextPhoneNumber.getText().toString().trim());
+                    if(phoneNumber_ID.equals("-1")){
+                        Toast.makeText(ConversationMainActivityLists.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
                     }else{
-                        newPerson = new Person(phoneNumber_ID,editTextName.getText().toString().trim(), dao);
+                        //add phone Number Verification;
+                        if(dao instanceof ChatFirebaseDAO){
+                            long timeStamp = System.currentTimeMillis();
+                            newPerson = new Person(phoneNumber_ID,editTextName.getText().toString().trim(), "" ,timeStamp,MessageType.SENT.toString(),dao);
+                        }else{
+                            newPerson = new Person(phoneNumber_ID,editTextName.getText().toString().trim(), dao);
+                        }
+                        newPerson.save();
+                        editTextName.setText("");
+                        editTextPhoneNumber.setText("");
+                        personsList.add(0,newPerson);
+                        myAdapt.notifyDataSetChanged();
                     }
-                    newPerson.save();
-                    editTextName.setText("");
-                    editTextPhoneNumber.setText("");
-                    personsList.add(0,newPerson);
-                    myAdapt.notifyDataSetChanged();
                     addDialog.dismiss();
                 }
             }
@@ -463,17 +468,21 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
                 @SuppressLint("Range") String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                Person newPerson;
-                if(dao instanceof ChatFirebaseDAO){
-                    long timeStamp = System.currentTimeMillis();
-                    newPerson = new Person(phoneNumber,name, "" ,timeStamp,MessageType.SENT.toString(),dao);
+                String phoneNumber_ID = formatPhoneNumber(phoneNumber);
+                if(phoneNumber_ID.equals("-1")){
+                    Toast.makeText(ConversationMainActivityLists.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
                 }else{
-                    newPerson = new Person(phoneNumber,name, dao);
+                    Person newPerson;
+                    if(dao instanceof ChatFirebaseDAO){
+                        long timeStamp = System.currentTimeMillis();
+                        newPerson = new Person(phoneNumber_ID,name, "" ,timeStamp,MessageType.SENT.toString(),dao);
+                    }else{
+                        newPerson = new Person(phoneNumber_ID,name, dao);
+                    }
+                    newPerson.save();
+                    personsList.add(0,newPerson);
+                    myAdapt.notifyDataSetChanged();
                 }
-                newPerson.save();
-                personsList.add(0,newPerson);
-                myAdapt.notifyDataSetChanged();
-
                 cursor.close();
             }
         }
@@ -512,20 +521,24 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
     @Override
     public void onContactItemClick(Contact contact, int pos) {
-
-        Person newPerson;
-        String contactPhoneNumberID = contact.getPhoneNumber();
         String contactNameId = contact.getName();
-        //add phone Number Verification;
-        if(dao instanceof ChatFirebaseDAO){
-            long timeStamp = System.currentTimeMillis();
-            newPerson = new Person(contactPhoneNumberID,contactNameId, "" ,timeStamp,MessageType.SENT.toString(),dao);
+
+        String contactPhoneNumberID = formatPhoneNumber(contact.getPhoneNumber());
+        if(contactPhoneNumberID.equals("-1")){
+            Toast.makeText(ConversationMainActivityLists.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
         }else{
-            newPerson = new Person(contactPhoneNumberID,contactNameId, dao);
+            Person newPerson;
+            //add phone Number Verification;
+            if(dao instanceof ChatFirebaseDAO){
+                long timeStamp = System.currentTimeMillis();
+                newPerson = new Person(contactPhoneNumberID,contactNameId, "" ,timeStamp,MessageType.SENT.toString(),dao);
+            }else{
+                newPerson = new Person(contactPhoneNumberID,contactNameId, dao);
+            }
+            newPerson.save();
+            personsList.add(0,newPerson);
+            myAdapt.notifyDataSetChanged();
         }
-        newPerson.save();
-        personsList.add(0,newPerson);
-        myAdapt.notifyDataSetChanged();
         dialogPlus.dismiss();
     }
 }

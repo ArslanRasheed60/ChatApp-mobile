@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.chatapp.Globals;
 import com.example.chatapp.IChatInterface;
+import com.example.chatapp.firebaseDb.ChatFirebaseDAO;
 import com.example.chatapp.sqliteDB.ChatDbDAO;
 import com.example.chatapp.R;
 import com.example.chatapp.RandomText;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Message> SRMessages;
     private EditText editText;
     RecyclerView recyclerViewMessageLists;
-    private RecyclerView.Adapter mAdaptor;
+    private MessageAdaptor mAdaptor;
 
     //
     private String receiverId , receiverName;
@@ -46,11 +47,21 @@ public class MainActivity extends AppCompatActivity {
     long timeStamp;
     String Sender_Name;
 
+    Bundle savedInstanceStateThis;
+    MessageViewModel vm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dao = Globals.dao;
+//        dao = Globals.dao;
+
+        dao = new ChatFirebaseDAO(new ChatFirebaseDAO.DataObserver() {
+            @Override
+            public void update() {
+                refresh();
+            }
+        });
 
         //data passed from parent
         Intent intent = getIntent();
@@ -59,8 +70,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewItemId = intent.getIntExtra("recyclerViewItemId", -1);
 
         //view model
-        MessageViewModel vm = new ViewModelProvider(this).get(MessageViewModel.class);
+        vm = new ViewModelProvider(this).get(MessageViewModel.class);
         vm.setDao(dao);
+        savedInstanceStateThis = savedInstanceState;
         SRMessages = vm.getMessages(savedInstanceState, "data", receiverId);
 
         recyclerViewMessageLists = (RecyclerView) findViewById(R.id.messageLists);
@@ -142,5 +154,11 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    public void refresh(){
+        SRMessages = Message.load(dao,receiverId);
+        if(SRMessages != null){
+            mAdaptor.updateData(SRMessages);
+        }
+    }
 
 }
