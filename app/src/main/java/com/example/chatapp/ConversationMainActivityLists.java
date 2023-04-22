@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -182,10 +183,12 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
 
         //handling contacts
         dialogPlus = DialogPlus.newDialog(this).setContentHolder(new ViewHolder(R.layout.contact_list))
-                .setExpanded(true)
+                .setExpanded(true, 1500)
+                .setBackgroundColorResId(R.color.Black1)
                 .create();
 
         View view = dialogPlus.getHolderView();
+        view.setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.Black1,null ));
         contactArrayList = new ArrayList<>();
         contactRecyclerView = view.findViewById(R.id.contactnamelists);
         contactAdaptor = new ContactAdaptor( contactArrayList, this );

@@ -33,11 +33,8 @@ public class Globals {
     public static final String CHAT_DB = "ChatDb";
     // functions
     public static boolean verifyPhoneNumber(String phoneNumber){
-        if(phoneNumber.length() != 11 ||
-                !phoneNumber.startsWith(String.valueOf(0))){
-            return false;
-        }
-        return true;
+        return phoneNumber.length() == 11 &&
+                phoneNumber.startsWith(String.valueOf(0));
     }
 
 }

@@ -195,6 +195,7 @@ public class ChatFirebaseDAO implements IChatInterface {
     @Override
     public void deleteAllPersons() {
         myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(CONVERSATION_TABLE);
+        myRef.removeValue();
         myRef = database.getReference().child(CHAT_DB).child(userPhoneNumber).child(MESSAGE_TABLE);
         myRef.removeValue();
     }
