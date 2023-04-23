@@ -331,12 +331,16 @@ public class ConversationMainActivityLists extends AppCompatActivity implements 
         editTextName.setTextColor(Color.WHITE);
         editTextName.setGravity(Gravity.CENTER);
         editTextName.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        editTextName.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.DimGray,null ));
+        editTextName.setHint("Enter Name");
 
         EditText editTextPhoneNumber = new EditText(this);
         textView.setBackgroundColor(backgroundColor);
         editTextPhoneNumber.setTextColor(Color.WHITE);
         editTextPhoneNumber.setGravity(Gravity.CENTER);
         editTextPhoneNumber.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        editTextPhoneNumber.setHintTextColor(ResourcesCompat.getColor(getResources(), R.color.DimGray,null ));
+        editTextPhoneNumber.setHint("Enter Number");
 
         // Create the "Delete" button
         Button AddButton = new Button(this);
