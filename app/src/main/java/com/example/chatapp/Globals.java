@@ -32,8 +32,10 @@ public class Globals {
     public static final String Email_Extension = "@chatapp.com";
     public static final String CHAT_DB = "ChatDb";
     // functions
+    //global function that takes phone number as input and check it is correct or not
     public static boolean verifyPhoneNumber(String phoneNumber){
-        if(phoneNumber.startsWith("+92")){
+        if(phoneNumber.startsWith("+")){
+            phoneNumber = phoneNumber.replaceAll("\\s", "");
             return phoneNumber.length() == 13;
         }else{
             return phoneNumber.length() == 11 &&
